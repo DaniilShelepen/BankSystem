@@ -1,8 +1,8 @@
 package com.daniil.bank.demo.dal.entity.natural;
 
-import com.daniil.bank.demo.finance.CLIENT_STATUS;
-import com.daniil.bank.demo.finance.CREDIT_STATUS;
-import com.daniil.bank.demo.finance.CURRENCY;
+import com.daniil.bank.demo.enums.CLIENT_STATUS;
+import com.daniil.bank.demo.enums.CREDIT_STATUS;
+import com.daniil.bank.demo.enums.CURRENCY;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,17 +25,18 @@ public class NaturalCredit {//еще раз проверь что все пол�
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private Long id;
 
     @Enumerated(EnumType.STRING)
     private CREDIT_STATUS status;
     @Enumerated(EnumType.STRING)
-    private CLIENT_STATUS client_status;
-    private BigDecimal amount;
+    private CLIENT_STATUS clientStatus;
+    private BigDecimal sum;
 
     @DateTimeFormat(pattern = "dd.MM.yyyy")
     private LocalDate loanTerm;//срок до какого должен быть выплачен кредит
     private Integer percentageRate;// процентная ставка
+    @Enumerated(EnumType.STRING)
     private CURRENCY currency;//валюта
     private BigDecimal forfeit;//штраф
     @ManyToOne

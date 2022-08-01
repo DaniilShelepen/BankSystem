@@ -1,7 +1,7 @@
 package com.daniil.bank.demo.dto;
 
-import com.daniil.bank.demo.finance.CLIENT_STATUS;
-import com.daniil.bank.demo.finance.CURRENCY;
+import com.daniil.bank.demo.enums.CLIENT_STATUS;
+import com.daniil.bank.demo.enums.CURRENCY;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
 
@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @Data
 @SuperBuilder
 public class LegalOfferDto {
-    private BigDecimal credit;
+    private BigDecimal sum;
     private String description;
     private String time;
     private Integer percentageRate;// процентная ставка

@@ -1,6 +1,7 @@
-package com.daniil.bank.demo.dal.entity.natural;
+package com.daniil.bank.demo.dal.entity;
 
-import com.daniil.bank.demo.enums.CLIENT_STATUS;
+import com.daniil.bank.demo.dal.entity.legal.Entity;
+import com.daniil.bank.demo.dal.entity.natural.Individual;
 import com.daniil.bank.demo.enums.CURRENCY;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,29 +11,28 @@ import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.List;
 
-@Entity
+@javax.persistence.Entity
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @SuperBuilder
-public class NaturalOffer {
+public class BankAccount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
-
-    private BigDecimal sum;
-    private String description;
-    private Long timeMonth;
-    private Integer percentageRate;// процентная ставка
+    private String IBAN;
+    private BigDecimal balance;
     @Enumerated(EnumType.STRING)
     private CURRENCY currency;
 
-    @Enumerated(EnumType.STRING)
-    private CLIENT_STATUS clientStatus;
-    private boolean available;
+    @ManyToOne
+    Individual individual;
 
+    @ManyToOne
+    Entity entity;
 }

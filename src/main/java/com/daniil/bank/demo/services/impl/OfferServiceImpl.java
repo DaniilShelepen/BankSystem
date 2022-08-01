@@ -23,9 +23,9 @@ public class OfferServiceImpl implements OfferService {
 
         naturalOfferRepository.save(NaturalOffer.builder()
                 .description(naturalOfferDto.getDescription())
-                .credit(naturalOfferDto.getCredit())
+                .sum(naturalOfferDto.getSum())
                 .currency(naturalOfferDto.getCurrency())
-                .client_status(naturalOfferDto.getClient_status())
+                .clientStatus(naturalOfferDto.getClient_status())
                 .percentageRate(naturalOfferDto.getPercentageRate())
                 .available(naturalOfferDto.isAvailable())
                 .build());
@@ -36,9 +36,9 @@ public class OfferServiceImpl implements OfferService {
     public void createLegalOffer(LegalOfferDto legalOfferDto) {
         legalOfferRepository.save(LegalOffer.builder()
                 .description(legalOfferDto.getDescription())
-                .credit(legalOfferDto.getCredit())
+                .sum(legalOfferDto.getSum())
                 .currency(legalOfferDto.getCurrency())
-                .client_status(legalOfferDto.getClient_status())
+                .clientStatus(legalOfferDto.getClient_status())
                 .percentageRate(legalOfferDto.getPercentageRate())
                 .available(legalOfferDto.isAvailable())
                 .build());
@@ -46,12 +46,12 @@ public class OfferServiceImpl implements OfferService {
 
 
     @Override
-    public void refactorNaturalOffer(Integer id, NaturalOfferDto naturalOfferDto) {
+    public void refactorNaturalOffer(Long id, NaturalOfferDto naturalOfferDto) {
         NaturalOffer naturalOffer = naturalOfferRepository.findById(id).orElseThrow(RuntimeException::new);//todo сюда свою ошибку впихни
 
         naturalOffer.setAvailable(naturalOfferDto.isAvailable());
-        naturalOffer.setCredit(naturalOfferDto.getCredit());
-        naturalOffer.setClient_status(naturalOfferDto.getClient_status());
+        naturalOffer.setSum(naturalOfferDto.getSum());
+        naturalOffer.setClientStatus(naturalOfferDto.getClient_status());
         naturalOffer.setDescription(naturalOfferDto.getDescription());
         naturalOffer.setCurrency(naturalOfferDto.getCurrency());
         naturalOffer.setPercentageRate(naturalOfferDto.getPercentageRate());
@@ -61,13 +61,13 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public void refactorLegalOffer(Integer id, LegalOfferDto legalOfferDto) {
+    public void refactorLegalOffer(Long id, LegalOfferDto legalOfferDto) {
 
         LegalOffer legalOffer = legalOfferRepository.findById(id).orElseThrow(RuntimeException::new);//todo сюда свою ошибку впихни
 
         legalOffer.setAvailable(legalOfferDto.isAvailable());
-        legalOffer.setCredit(legalOfferDto.getCredit());
-        legalOffer.setClient_status(legalOfferDto.getClient_status());
+        legalOffer.setSum(legalOfferDto.getSum());
+        legalOffer.setClientStatus(legalOfferDto.getClient_status());
         legalOffer.setDescription(legalOfferDto.getDescription());
         legalOffer.setCurrency(legalOfferDto.getCurrency());
         legalOffer.setPercentageRate(legalOfferDto.getPercentageRate());
@@ -77,14 +77,14 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public void deleteNaturalOffer(Integer id) {
+    public void deleteNaturalOffer(Long id) {
         naturalOfferRepository.findById(id).orElseThrow(RuntimeException::new);//todo своя ошибка
         naturalOfferRepository.deleteById(id);
 
     }
 
     @Override
-    public void deleteLegalOffer(Integer id) {
+    public void deleteLegalOffer(Long id) {
         legalOfferRepository.findById(id).orElseThrow(RuntimeException::new);//todo своя ошибка
         legalOfferRepository.deleteById(id);
     }

@@ -1,11 +1,13 @@
 package com.daniil.bank.demo.dal.entity.natural;
 
-import com.daniil.bank.demo.finance.CLIENT_STATUS;
+import com.daniil.bank.demo.dal.entity.BankAccount;
+import com.daniil.bank.demo.enums.CLIENT_STATUS;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import net.bytebuddy.build.Plugin;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -21,7 +23,7 @@ public class Individual {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private Long id;
 
     private String name;
     private String surname;
@@ -34,8 +36,10 @@ public class Individual {
     @Size(min = 13, max = 13)
     private String phoneNumber;
     @Enumerated(EnumType.STRING)
-    private CLIENT_STATUS client_status;
+    private CLIENT_STATUS clientStatus;
 
-    @OneToMany(mappedBy = "individual")
+    @OneToMany(mappedBy = "individual", cascade = CascadeType.ALL)
     List<NaturalCredit> naturalCreditList;
+    @OneToMany(mappedBy = "individual", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    List<BankAccount> bankAccounts;
 }

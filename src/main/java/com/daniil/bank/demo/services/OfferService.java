@@ -8,11 +8,11 @@ public interface OfferService {
 
     void createLegalOffer(LegalOfferDto legalOfferDto);
 
-    void refactorNaturalOffer(Integer id, NaturalOfferDto naturalOfferDto);
+    void refactorNaturalOffer(Long id, NaturalOfferDto naturalOfferDto);
 
-    void refactorLegalOffer(Integer id, LegalOfferDto legalOfferDto);
+    void refactorLegalOffer(Long id, LegalOfferDto legalOfferDto);
 
-    void deleteNaturalOffer(Integer id);
+    void deleteNaturalOffer(Long id);
 
-    void deleteLegalOffer(Integer id);
+    void deleteLegalOffer(Long id);
 }

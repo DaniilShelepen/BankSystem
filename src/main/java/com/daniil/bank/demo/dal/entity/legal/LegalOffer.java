@@ -1,7 +1,7 @@
 package com.daniil.bank.demo.dal.entity.legal;
 
-import com.daniil.bank.demo.finance.CLIENT_STATUS;
-import com.daniil.bank.demo.finance.CURRENCY;
+import com.daniil.bank.demo.enums.CLIENT_STATUS;
+import com.daniil.bank.demo.enums.CURRENCY;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,10 +22,10 @@ public class LegalOffer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private Long id;
 
 
-    private BigDecimal credit;
+    private BigDecimal sum;
     private String description;
     private Long timeMonth;
     private Integer percentageRate;// процентная ставка
@@ -33,7 +33,7 @@ public class LegalOffer {
     private CURRENCY currency;
 
     @Enumerated(EnumType.STRING)
-    private CLIENT_STATUS client_status;
+    private CLIENT_STATUS clientStatus;
 
     private boolean available;
 }

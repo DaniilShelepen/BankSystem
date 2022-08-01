@@ -1,6 +1,7 @@
 package com.daniil.bank.demo.dal.entity.legal;
 
-import com.daniil.bank.demo.finance.CLIENT_STATUS;
+import com.daniil.bank.demo.dal.entity.BankAccount;
+import com.daniil.bank.demo.enums.CLIENT_STATUS;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +21,7 @@ public class Entity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private Long id;
 
 
     private String name;
@@ -28,9 +29,11 @@ public class Entity {
     private String address;
     private String phone;
     @Enumerated(EnumType.STRING)
-    private CLIENT_STATUS client_status;
+    private CLIENT_STATUS clientStatus;
 
     @OneToMany(mappedBy = "entity")
     List<LegalCredit> legalCreditList;
 
+    @OneToMany(mappedBy = "entity", fetch = FetchType.EAGER)
+    List<BankAccount> bankAccounts;
 }

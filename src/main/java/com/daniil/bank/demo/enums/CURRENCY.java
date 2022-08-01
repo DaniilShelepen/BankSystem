@@ -1,4 +1,4 @@
-package com.daniil.bank.demo.finance;
+package com.daniil.bank.demo.enums;
 
 public enum CURRENCY {
     USD,
