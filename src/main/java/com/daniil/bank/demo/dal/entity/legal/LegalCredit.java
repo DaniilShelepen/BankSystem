@@ -28,6 +28,7 @@ public class LegalCredit {
 
     @Enumerated(EnumType.STRING)
     private CREDIT_STATUS status;
+    private String number;
     @Enumerated(EnumType.STRING)
     private CLIENT_STATUS clientStatus;
     private BigDecimal sum;
@@ -39,7 +40,7 @@ public class LegalCredit {
     private CURRENCY currency;//валюта
     private BigDecimal forfeit;//штраф/
 
- //   private boolean fixedInterestRate;//фиксированная процентная ставка
+    //   private boolean fixedInterestRate;//фиксированная процентная ставка
 
     @ManyToOne
     private Entity entity;

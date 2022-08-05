@@ -2,39 +2,40 @@ package com.daniil.bank.demo.dal.entity;
 
 import com.daniil.bank.demo.dal.entity.legal.Entity;
 import com.daniil.bank.demo.dal.entity.natural.Individual;
-import com.daniil.bank.demo.enums.ACCOUNT_STATUS;
-import com.daniil.bank.demo.enums.CURRENCY;
+import com.daniil.bank.demo.enums.CARD_TYPE;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @javax.persistence.Entity
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @SuperBuilder
-public class BankAccount {
+public class BankCard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    private String IBAN;
-    private BigDecimal balance;
+    private String cardName;
+    private String cardNumber;
+    @DateTimeFormat(pattern = "MM.YY")
+    private LocalDate validity;
+    private String CVV;
+    private String password;
     @Enumerated(EnumType.STRING)
-    private CURRENCY currency;
-    @Enumerated(EnumType.STRING)
-    private ACCOUNT_STATUS accountStatus;
+    CARD_TYPE cardType;
 
-    @ManyToOne
+    @OneToOne
     Individual individual;
-
     @ManyToOne
     Entity entity;
 }

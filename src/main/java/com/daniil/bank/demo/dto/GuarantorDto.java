@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 @Data
 @SuperBuilder
 public class GuarantorDto {
-   // private Integer id;
     private String name;
     private String surname;
     private String thirdName;

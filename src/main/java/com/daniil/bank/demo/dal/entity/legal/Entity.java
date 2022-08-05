@@ -1,6 +1,7 @@
 package com.daniil.bank.demo.dal.entity.legal;
 
 import com.daniil.bank.demo.dal.entity.BankAccount;
+import com.daniil.bank.demo.dal.entity.BankCard;
 import com.daniil.bank.demo.enums.CLIENT_STATUS;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,4 +37,7 @@ public class Entity {
 
     @OneToMany(mappedBy = "entity", fetch = FetchType.EAGER)
     List<BankAccount> bankAccounts;
+
+    @OneToMany(mappedBy = "entity")
+    List<BankCard> bankCards;
 }

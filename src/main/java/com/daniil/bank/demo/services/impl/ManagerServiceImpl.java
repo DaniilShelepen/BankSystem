@@ -1,6 +1,7 @@
 package com.daniil.bank.demo.services.impl;
 
 import com.daniil.bank.demo.dal.entity.BankAccount;
+import com.daniil.bank.demo.dal.entity.BankCard;
 import com.daniil.bank.demo.dal.entity.legal.Entity;
 import com.daniil.bank.demo.dal.entity.legal.LegalCredit;
 import com.daniil.bank.demo.dal.entity.legal.LegalOffer;
@@ -10,9 +11,7 @@ import com.daniil.bank.demo.dal.entity.natural.NaturalCredit;
 import com.daniil.bank.demo.dal.entity.natural.NaturalOffer;
 import com.daniil.bank.demo.dal.repository.*;
 import com.daniil.bank.demo.dto.*;
-import com.daniil.bank.demo.enums.CLIENT_STATUS;
-import com.daniil.bank.demo.enums.CREDIT_STATUS;
-import com.daniil.bank.demo.enums.CURRENCY;
+import com.daniil.bank.demo.enums.*;
 import com.daniil.bank.demo.mapper.EntityConvertor;
 import com.daniil.bank.demo.mapper.IndividualConvertor;
 import com.daniil.bank.demo.mapper.LegalOfferConvertor;
@@ -28,6 +27,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -48,6 +48,7 @@ public class ManagerServiceImpl implements ManagerService {
     private final LegalOfferConvertor legalOfferConvertor;
     private final BankAccountRepository bankAccountRepository;
 
+    private final BankCardRepository bankCardRepository;
 
     private String getIban() {
         Iban iban;
@@ -64,15 +65,18 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public IndividualDto createIndividual(IndividualDto individualDto, CURRENCY currency) {
-        Individual individualDB = individualRepository.findByPassportIDAndPassportSeries(individualDto.getPassportID(), individualDto.getPassportSeries());
+        Individual individualDB = individualRepository
+                .findByPassportIDAndPassportSeries(individualDto.getPassportID(), individualDto.getPassportSeries());
 
         if (individualDB != null) {//todo посмотри как можно переделать
-            if ((int) individualDB.getBankAccounts().stream().filter(bankAccount -> bankAccount.getCurrency().equals(currency)).count() == 0) {
+            if ((int) individualDB.getBankAccounts().stream()
+                    .filter(bankAccount -> bankAccount.getCurrency().equals(currency)).count() == 0) {
                 bankAccountRepository.save(BankAccount.builder()
                         .balance(BigDecimal.ZERO)
                         .IBAN(getIban())
                         .individual(individualDB)
                         .currency(currency)
+                        .accountStatus(ACCOUNT_STATUS.ACTIVE)
                         .build());
                 return individualConvertor.convert(individualDB);
             }
@@ -94,6 +98,7 @@ public class ManagerServiceImpl implements ManagerService {
                 .IBAN(getIban())
                 .individual(newIndividual)
                 .currency(currency)
+                .accountStatus(ACCOUNT_STATUS.ACTIVE)
                 .build());
 
         return individualConvertor.convert(newIndividual);
@@ -122,12 +127,14 @@ public class ManagerServiceImpl implements ManagerService {
         Entity entityDB = entityRepository.findByNameAndAddress(entityDto.getName(), entityDto.getAddress());
 
         if (entityDB != null) {//todo посмотри как можно переделать
-            if ((int) entityDB.getBankAccounts().stream().filter(bankAccount -> bankAccount.getCurrency().equals(currency)).count() == 0) {
+            if ((int) entityDB.getBankAccounts().stream()
+                    .filter(bankAccount -> bankAccount.getCurrency().equals(currency)).count() == 0) {
                 bankAccountRepository.save(BankAccount.builder()
                         .balance(BigDecimal.ZERO)
                         .IBAN(getIban())
                         .entity(entityDB)
                         .currency(currency)
+                        .accountStatus(ACCOUNT_STATUS.ACTIVE)
                         .build());
                 return entityConvertor.convert(entityDB);
             }
@@ -148,6 +155,7 @@ public class ManagerServiceImpl implements ManagerService {
                 .IBAN(getIban())
                 .entity(newEntity)
                 .currency(currency)
+                .accountStatus(ACCOUNT_STATUS.ACTIVE)
                 .build());
         return entityConvertor.convert(newEntity);
     }
@@ -178,6 +186,13 @@ public class ManagerServiceImpl implements ManagerService {
             throw new RuntimeException();//todo exeption
         Guarantor guarantor = createGuarantor(guarantorDto);
 
+
+        String number;
+        do {
+            number = getCreditNumber();
+        } while (naturalCreditRepository.findByNumber(number) == null);
+
+
         switch (client.getClientStatus()) {
 
             case BENEFIT -> {
@@ -189,6 +204,7 @@ public class ManagerServiceImpl implements ManagerService {
                         .percentageRate((int) Math.round(credit.getPercentageRate() - (credit.getPercentageRate() * 0.1)))
                         .currency(credit.getCurrency())
                         .forfeit(BigDecimal.ZERO)
+                        .number(number)
                         .guarantor(null)
                         .individual(client)
                         .build());
@@ -207,6 +223,7 @@ public class ManagerServiceImpl implements ManagerService {
                         .percentageRate((int) Math.round(credit.getPercentageRate() - (credit.getPercentageRate() * 0.3)))
                         .currency(credit.getCurrency())
                         .forfeit(BigDecimal.ZERO)
+                        .number(number)
                         .guarantor(guarantor)
                         .individual(client)
                         .build());
@@ -224,6 +241,7 @@ public class ManagerServiceImpl implements ManagerService {
                         .percentageRate((int) Math.round(credit.getPercentageRate() - (credit.getPercentageRate() * 0.4)))
                         .currency(credit.getCurrency())
                         .forfeit(BigDecimal.ZERO)
+                        .number(number)
                         .guarantor(null)
                         .individual(client)
                         .build());
@@ -241,6 +259,7 @@ public class ManagerServiceImpl implements ManagerService {
                         .percentageRate(credit.getPercentageRate())
                         .currency(credit.getCurrency())
                         .forfeit(BigDecimal.ZERO)
+                        .number(number)
                         .guarantor(guarantor)
                         .individual(client)
                         .build());
@@ -250,6 +269,7 @@ public class ManagerServiceImpl implements ManagerService {
             }
 
         }
+        ;
     }
 
 
@@ -262,6 +282,10 @@ public class ManagerServiceImpl implements ManagerService {
 
         Entity client = entityRepository.findByNameAndAddress(clientDto.getName().toUpperCase(), clientDto.getAddress().toUpperCase());
 
+        String number;
+        do {
+            number = getCreditNumber();
+        } while (naturalCreditRepository.findByNumber(number) == null);
 
         if (client.getClientStatus().compareTo(credit.getClientStatus()) <= 0)
             throw new RuntimeException();//todo exeption
@@ -271,6 +295,7 @@ public class ManagerServiceImpl implements ManagerService {
             case REGULAR -> {
                 legalCreditRepository.save(LegalCredit.builder()
                         .entity(client)
+                        .number(number)
                         .forfeit(BigDecimal.ZERO)
                         .status(CREDIT_STATUS.PROCESSING)
                         .clientStatus(client.getClientStatus())
@@ -285,6 +310,7 @@ public class ManagerServiceImpl implements ManagerService {
             case VIP -> {
                 legalCreditRepository.save(LegalCredit.builder()
                         .entity(client)
+                        .number(number)
                         .forfeit(BigDecimal.ZERO)
                         .status(CREDIT_STATUS.PROCESSING)
                         .clientStatus(client.getClientStatus())
@@ -300,6 +326,7 @@ public class ManagerServiceImpl implements ManagerService {
             default -> {
                 legalCreditRepository.save(LegalCredit.builder()
                         .entity(client)
+                        .number(number)
                         .forfeit(BigDecimal.ZERO)
                         .status(CREDIT_STATUS.PROCESSING)
                         .clientStatus(client.getClientStatus())
@@ -314,6 +341,39 @@ public class ManagerServiceImpl implements ManagerService {
 
     }
 
+    @Override
+    public void createIndividualCard(IndividualDto individualDto, CARD_TYPE cardType) {
+
+        IndividualDto clientDto = createIndividual(individualDto, CURRENCY.BYN);
+
+        Individual client = individualRepository
+                .findByPassportIDAndPassportSeries(clientDto.getPassportID(), clientDto.getPassportSeries());
+
+        bankCardRepository.save(BankCard.builder()
+                .individual(client)
+                .CVV("create cvv")
+                .cardName(client.getName() + " " + client.getSurname())
+                .cardNumber("create")
+                .cardType(cardType)
+                .password("create")
+                .validity(LocalDate.now())//todo
+                .build()
+        );
+
+    }
+
+    private String getCreditNumber() {
+
+        String str = "0123456789";
+
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 20; i++) {
+            int number = random.nextInt(10);
+            sb.append(str.charAt(number));
+        }
+        return sb.toString();
+    }
 
 }
 

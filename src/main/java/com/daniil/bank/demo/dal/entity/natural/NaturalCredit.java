@@ -29,6 +29,7 @@ public class NaturalCredit {//еще раз проверь что все пол�
 
     @Enumerated(EnumType.STRING)
     private CREDIT_STATUS status;
+    private String number;
     @Enumerated(EnumType.STRING)
     private CLIENT_STATUS clientStatus;
     private BigDecimal sum;
@@ -41,7 +42,7 @@ public class NaturalCredit {//еще раз проверь что все пол�
     private BigDecimal forfeit;//штраф
     @ManyToOne
     private Guarantor guarantor;
- //   private boolean fixedInterestRate;//фиксированная процентная ставка
+    //   private boolean fixedInterestRate;//фиксированная процентная ставка
 
     @ManyToOne
     private Individual individual;
