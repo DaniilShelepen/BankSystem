@@ -12,6 +12,7 @@ import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.List;
 
 @javax.persistence.Entity
 @Getter
@@ -31,6 +32,9 @@ public class BankAccount {
     private CURRENCY currency;
     @Enumerated(EnumType.STRING)
     private ACCOUNT_STATUS accountStatus;
+
+    @OneToMany(mappedBy = "bankAccount", cascade = CascadeType.ALL)
+    List<BankCard> bankCard;
 
     @ManyToOne
     Individual individual;

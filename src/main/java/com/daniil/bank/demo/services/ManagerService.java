@@ -27,7 +27,17 @@ public interface ManagerService {
     void createLegalContract(EntityDto entityDto, Long offerId, BigDecimal sum);
 
     @Transactional
-    void createIndividualCard(IndividualDto individualDto, CARD_TYPE cardType);
+    void createIndividualCard(IndividualDto individualDto, CARD_TYPE cardType, Integer bankAccNum);
 
+    @Transactional
+    void createEntityCard(EntityDto entityDto, IndividualDto individualDto, CARD_TYPE cardType, Integer bankAccNum);
+
+    List<BankAccountDto> getIndividualBankAccList(String passportID, String passportSeries);
+
+    List<BankAccountDto> getEntityBankAccList(String name);
+
+    String getIndividualINFO(String passportID, String passportSeries);
+
+    String getEntityINFO(String name);
 
 }

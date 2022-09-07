@@ -1,21 +1,20 @@
 package com.daniil.bank.demo.services.impl;
 
 import com.daniil.bank.demo.dal.entity.BankAccount;
-import com.daniil.bank.demo.dal.entity.BankCard;
 import com.daniil.bank.demo.dal.entity.legal.Entity;
-import com.daniil.bank.demo.dal.entity.legal.LegalCredit;
 import com.daniil.bank.demo.dal.entity.legal.LegalOffer;
 import com.daniil.bank.demo.dal.entity.natural.Guarantor;
 import com.daniil.bank.demo.dal.entity.natural.Individual;
-import com.daniil.bank.demo.dal.entity.natural.NaturalCredit;
 import com.daniil.bank.demo.dal.entity.natural.NaturalOffer;
 import com.daniil.bank.demo.dal.repository.*;
 import com.daniil.bank.demo.dto.*;
-import com.daniil.bank.demo.enums.*;
-import com.daniil.bank.demo.mapper.EntityConvertor;
-import com.daniil.bank.demo.mapper.IndividualConvertor;
-import com.daniil.bank.demo.mapper.LegalOfferConvertor;
-import com.daniil.bank.demo.mapper.NaturalOfferConvertor;
+import com.daniil.bank.demo.enums.ACCOUNT_STATUS;
+import com.daniil.bank.demo.enums.CARD_TYPE;
+import com.daniil.bank.demo.enums.CLIENT_STATUS;
+import com.daniil.bank.demo.enums.CURRENCY;
+import com.daniil.bank.demo.mapper.*;
+import com.daniil.bank.demo.services.CardService;
+import com.daniil.bank.demo.services.ContractService;
 import com.daniil.bank.demo.services.ManagerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,10 +23,9 @@ import org.iban4j.Iban;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -38,8 +36,6 @@ public class ManagerServiceImpl implements ManagerService {
     private final IndividualRepository individualRepository;
     private final EntityRepository entityRepository;
     private final GuarantorRepository guarantorRepository;
-    private final NaturalCreditRepository naturalCreditRepository;
-    private final LegalCreditRepository legalCreditRepository;
     private final NaturalOfferRepository naturalOfferRepository;
     private final LegalOfferRepository legalOfferRepository;
     private final IndividualConvertor individualConvertor;
@@ -47,21 +43,10 @@ public class ManagerServiceImpl implements ManagerService {
     private final EntityConvertor entityConvertor;
     private final LegalOfferConvertor legalOfferConvertor;
     private final BankAccountRepository bankAccountRepository;
+    private final CardService cardService;
+    private final ContractService contractService;
 
-    private final BankCardRepository bankCardRepository;
-
-    private String getIban() {
-        Iban iban;
-
-        do {
-            iban = new Iban.Builder()
-                    .countryCode(CountryCode.BY)
-                    .bankCode("1707")
-                    .buildRandom();
-        }
-        while (bankAccountRepository.findBankAccountByIBAN(String.valueOf(iban)) != null);
-        return iban.toString();
-    }
+    private final BankAccountConvertor bankAccountConvertor;
 
     @Override
     public IndividualDto createIndividual(IndividualDto individualDto, CURRENCY currency) {
@@ -124,7 +109,7 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public EntityDto createEntity(EntityDto entityDto, CURRENCY currency) {
-        Entity entityDB = entityRepository.findByNameAndAddress(entityDto.getName(), entityDto.getAddress());
+        Entity entityDB = entityRepository.findByName(entityDto.getName().toUpperCase());
 
         if (entityDB != null) {//todo посмотри как можно переделать
             if ((int) entityDB.getBankAccounts().stream()
@@ -180,96 +165,15 @@ public class ManagerServiceImpl implements ManagerService {
 
         IndividualDto clientDto = createIndividual(individualDto, credit.getCurrency());
 
-        Individual client = individualRepository.findByPassportIDAndPassportSeries(clientDto.getPassportID().toUpperCase(), clientDto.getPassportSeries().toUpperCase());
+        Individual client = individualRepository
+                .findByPassportIDAndPassportSeries(clientDto.getPassportID().toUpperCase(), clientDto.getPassportSeries().toUpperCase());
 
         if (client.getClientStatus().compareTo(credit.getClientStatus()) <= 0)
-            throw new RuntimeException();//todo exeption
+            throw new RuntimeException();//todo exception
         Guarantor guarantor = createGuarantor(guarantorDto);
 
 
-        String number;
-        do {
-            number = getCreditNumber();
-        } while (naturalCreditRepository.findByNumber(number) == null);
-
-
-        switch (client.getClientStatus()) {
-
-            case BENEFIT -> {
-                naturalCreditRepository.save(NaturalCredit.builder()
-                        .sum(sum)
-                        .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))//todo тут посмотри как поставить последний день получившегося месяца
-                        .status(CREDIT_STATUS.PROCESSING)
-                        .clientStatus(client.getClientStatus())
-                        .percentageRate((int) Math.round(credit.getPercentageRate() - (credit.getPercentageRate() * 0.1)))
-                        .currency(credit.getCurrency())
-                        .forfeit(BigDecimal.ZERO)
-                        .number(number)
-                        .guarantor(null)
-                        .individual(client)
-                        .build());
-
-            }
-
-            case REGULAR -> {
-                if (!guarantor.isAvailable())
-                    throw new RuntimeException();//todo exeption, подумай как еще от ифов избавиться
-
-                naturalCreditRepository.save(NaturalCredit.builder()
-                        .sum(sum)
-                        .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))//todo тут посмотри как поставиьт последний день получившегося месяца
-                        .status(CREDIT_STATUS.PROCESSING)
-                        .clientStatus(client.getClientStatus())
-                        .percentageRate((int) Math.round(credit.getPercentageRate() - (credit.getPercentageRate() * 0.3)))
-                        .currency(credit.getCurrency())
-                        .forfeit(BigDecimal.ZERO)
-                        .number(number)
-                        .guarantor(guarantor)
-                        .individual(client)
-                        .build());
-
-                guarantor.setAvailable(false);
-                guarantorRepository.save(guarantor);//todo попробуй эту строчку потом убери, типо оно и так обновится должно
-            }
-
-            case VIP -> {
-                naturalCreditRepository.save(NaturalCredit.builder()
-                        .sum(sum)
-                        .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))//todo тут посмотри как поставить последний день получившегося месяца
-                        .status(CREDIT_STATUS.PROCESSING)
-                        .clientStatus(client.getClientStatus())
-                        .percentageRate((int) Math.round(credit.getPercentageRate() - (credit.getPercentageRate() * 0.4)))
-                        .currency(credit.getCurrency())
-                        .forfeit(BigDecimal.ZERO)
-                        .number(number)
-                        .guarantor(null)
-                        .individual(client)
-                        .build());
-            }
-
-            default -> {
-                if (!guarantor.isAvailable())
-                    throw new RuntimeException();//todo exeption, подумай как еще от ифов избавиться
-
-                naturalCreditRepository.save(NaturalCredit.builder()
-                        .sum(sum)
-                        .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))//todo тут посмотри как поставиьт последний день получившегося месяца
-                        .status(CREDIT_STATUS.PROCESSING)
-                        .clientStatus(client.getClientStatus())
-                        .percentageRate(credit.getPercentageRate())
-                        .currency(credit.getCurrency())
-                        .forfeit(BigDecimal.ZERO)
-                        .number(number)
-                        .guarantor(guarantor)
-                        .individual(client)
-                        .build());
-
-                guarantor.setAvailable(false);
-                guarantorRepository.save(guarantor);//todo попробуй эту строчку потом убери, типо оно и так обновится должно
-            }
-
-        }
-        ;
+        contractService.individualContract(client, credit, guarantor, sum);
     }
 
 
@@ -280,100 +184,87 @@ public class ManagerServiceImpl implements ManagerService {
 
         EntityDto clientDto = createEntity(entityDto, credit.getCurrency());
 
-        Entity client = entityRepository.findByNameAndAddress(clientDto.getName().toUpperCase(), clientDto.getAddress().toUpperCase());
+        Entity client = entityRepository.findByName(clientDto.getName().toUpperCase());
 
-        String number;
-        do {
-            number = getCreditNumber();
-        } while (naturalCreditRepository.findByNumber(number) == null);
-
-        if (client.getClientStatus().compareTo(credit.getClientStatus()) <= 0)
-            throw new RuntimeException();//todo exeption
-
-        switch (client.getClientStatus()) {
-
-            case REGULAR -> {
-                legalCreditRepository.save(LegalCredit.builder()
-                        .entity(client)
-                        .number(number)
-                        .forfeit(BigDecimal.ZERO)
-                        .status(CREDIT_STATUS.PROCESSING)
-                        .clientStatus(client.getClientStatus())
-                        .percentageRate((int) Math.round(credit.getPercentageRate() - (credit.getPercentageRate() * 0.25)))
-                        .currency(credit.getCurrency())
-                        .sum(sum)
-                        .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))
-                        .build());
-            }
-
-
-            case VIP -> {
-                legalCreditRepository.save(LegalCredit.builder()
-                        .entity(client)
-                        .number(number)
-                        .forfeit(BigDecimal.ZERO)
-                        .status(CREDIT_STATUS.PROCESSING)
-                        .clientStatus(client.getClientStatus())
-                        .percentageRate((int) Math.round(credit.getPercentageRate() - (credit.getPercentageRate() * 0.4)))
-                        .currency(credit.getCurrency())
-                        .sum(sum)
-                        .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))
-                        .build());
-
-
-            }
-
-            default -> {
-                legalCreditRepository.save(LegalCredit.builder()
-                        .entity(client)
-                        .number(number)
-                        .forfeit(BigDecimal.ZERO)
-                        .status(CREDIT_STATUS.PROCESSING)
-                        .clientStatus(client.getClientStatus())
-                        .percentageRate(credit.getPercentageRate())
-                        .currency(credit.getCurrency())
-                        .sum(sum)
-                        .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))
-                        .build());
-            }
-
-        }
+        contractService.legalContract(client, credit, sum);
 
     }
 
     @Override
-    public void createIndividualCard(IndividualDto individualDto, CARD_TYPE cardType) {
+    public void createEntityCard(EntityDto entityDto, IndividualDto individualDto, CARD_TYPE cardType, Integer bankAccNum) {
 
+        EntityDto client1Dto = createEntity(entityDto, CURRENCY.BYN);
+
+        Entity client1 = entityRepository.findByName(client1Dto.getName().toUpperCase());
+
+        IndividualDto client2Dto = createIndividual(individualDto, CURRENCY.BYN);
+
+        Individual client2 = individualRepository
+                .findByPassportIDAndPassportSeries(client2Dto.getPassportID(), client2Dto.getPassportSeries());
+
+        cardService.createEntityCard(client1, client2, cardType, bankAccNum - 1);
+
+
+    }
+
+    @Override
+    public void createIndividualCard(IndividualDto individualDto, CARD_TYPE cardType, Integer bankAccNum) {
         IndividualDto clientDto = createIndividual(individualDto, CURRENCY.BYN);
 
         Individual client = individualRepository
                 .findByPassportIDAndPassportSeries(clientDto.getPassportID(), clientDto.getPassportSeries());
 
-        bankCardRepository.save(BankCard.builder()
-                .individual(client)
-                .CVV("create cvv")
-                .cardName(client.getName() + " " + client.getSurname())
-                .cardNumber("create")
-                .cardType(cardType)
-                .password("create")
-                .validity(LocalDate.now())//todo
-                .build()
-        );
+        cardService.createIndividualCard(client, cardType, bankAccNum - 1);
 
     }
 
-    private String getCreditNumber() {
+    @Override
+    public List<BankAccountDto> getIndividualBankAccList(String passportID, String passportSeries) {
 
-        String str = "0123456789";
+        Individual client = Optional.ofNullable(individualRepository.findByPassportIDAndPassportSeries(passportID.toUpperCase(),
+                passportSeries.toUpperCase())).orElseThrow(RuntimeException::new);//todo
 
-        Random random = new Random();
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 20; i++) {
-            int number = random.nextInt(10);
-            sb.append(str.charAt(number));
+        return bankAccountRepository.findAllByIndividual(client).stream()
+                .map(bankAccountConvertor::convert).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BankAccountDto> getEntityBankAccList(String name) {
+
+        Entity client = Optional.ofNullable(entityRepository.findByName(name.toUpperCase()))
+                .orElseThrow(RuntimeException::new);//todo
+
+        return bankAccountRepository.findAllByEntity(client).stream().map(bankAccountConvertor::convert)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public String getIndividualINFO(String passportID, String passportSeries) {
+
+        Individual client = Optional.ofNullable(individualRepository
+                        .findByPassportIDAndPassportSeries(passportID.toUpperCase(), passportSeries.toUpperCase()))
+                .orElseThrow(RuntimeException::new);//todo
+
+
+        return null;
+    }
+
+    @Override
+    public String getEntityINFO(String name) {
+        return null;
+    }
+
+    private String getIban() {
+        Iban iban;
+
+        do {
+            iban = new Iban.Builder()
+                    .countryCode(CountryCode.BY)
+                    .bankCode("1707")
+                    .buildRandom();
         }
-        return sb.toString();
+        while (bankAccountRepository.findBankAccountByIBAN(String.valueOf(iban)) != null);
+        return iban.toString();
     }
-
 }
 

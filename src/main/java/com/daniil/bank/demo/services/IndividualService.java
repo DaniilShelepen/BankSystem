@@ -5,7 +5,7 @@ import java.time.LocalDate;
 
 public interface IndividualService {
 
-    void payByIBAN(String iban, BigDecimal sum);
+    void payByIBAN(String iban, BigDecimal sum, String cardNum);
 
     void onlinePay(String cardNumber, String cardName, String CVV, LocalDate validity, BigDecimal sum);
 

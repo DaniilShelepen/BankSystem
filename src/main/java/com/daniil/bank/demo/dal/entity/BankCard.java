@@ -27,12 +27,16 @@ public class BankCard {
 
     private String cardName;
     private String cardNumber;
-    @DateTimeFormat(pattern = "MM.YY")
+    @DateTimeFormat(pattern = "yyyy-MM")
     private LocalDate validity;
     private String CVV;
     private String password;
     @Enumerated(EnumType.STRING)
     CARD_TYPE cardType;
+    private boolean corporate;
+
+    @ManyToOne()
+    BankAccount bankAccount;
 
     @OneToOne
     Individual individual;
