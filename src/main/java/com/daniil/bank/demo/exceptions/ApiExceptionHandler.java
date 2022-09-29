@@ -26,4 +26,18 @@ public class ApiExceptionHandler {
     }
 
 
+
+    @ExceptionHandler({ManagerException.class})
+    public ResponseEntity<Object> handlerManagerException(ManagerException exception) {
+        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+
+        ApiException apiException = ApiException.builder()
+                .message(exception.getMessage())
+                .httpStatus(httpStatus)
+                .throwable(exception)
+                .timeZone(ZonedDateTime.now())
+                .build();
+        return new ResponseEntity<>(apiException, httpStatus);
+    }
+
 }

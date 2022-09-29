@@ -12,6 +12,7 @@ import com.daniil.bank.demo.enums.ACCOUNT_STATUS;
 import com.daniil.bank.demo.enums.CARD_TYPE;
 import com.daniil.bank.demo.enums.CLIENT_STATUS;
 import com.daniil.bank.demo.enums.CURRENCY;
+import com.daniil.bank.demo.exceptions.ManagerException;
 import com.daniil.bank.demo.mapper.*;
 import com.daniil.bank.demo.services.CardService;
 import com.daniil.bank.demo.services.ContractService;
@@ -246,12 +247,16 @@ public class ManagerServiceImpl implements ManagerService {
                 .orElseThrow(RuntimeException::new);//todo
 
 
-        return null;
+        return client.getName() + " " + client.getSurname() + " " + client.getThirdName() + "\n" +
+                client.getPassportSeries() + " " + client.getPassportID() + "\n" + client.getPhoneNumber();
     }
 
     @Override
     public String getEntityINFO(String name) {
-        return null;
+
+        Entity entity = Optional.ofNullable(entityRepository.findByName(name.toUpperCase())).orElseThrow(() -> new ManagerException("No such Entity found"));
+
+        return entity.getName() + "\n" + entity.getAddress() + "\n" + entity.getPhone();
     }
 
     private String getIban() {
