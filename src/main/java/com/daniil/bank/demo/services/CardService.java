@@ -6,10 +6,10 @@ import com.daniil.bank.demo.enums.CARD_TYPE;
 
 public interface CardService {
 
-    void createIndividualCard(Individual individual, CARD_TYPE cardType, Integer bankAccNumber);
+    String createIndividualCard(Individual individual, CARD_TYPE cardType, Integer bankAccNumber);
 
 
-    void createEntityCard(Entity entity, Individual individual, CARD_TYPE cardType, Integer bankAccNumber);
+    String createEntityCard(Entity entity, Individual individual, CARD_TYPE cardType, Integer bankAccNumber);
 
 
 }

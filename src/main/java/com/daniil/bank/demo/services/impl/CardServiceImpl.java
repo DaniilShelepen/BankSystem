@@ -26,7 +26,10 @@ public class CardServiceImpl implements CardService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
-    public void createIndividualCard(Individual individual, CARD_TYPE cardType, Integer bankAccNumber) {
+    public String createIndividualCard(Individual individual, CARD_TYPE cardType, Integer bankAccNumber) {
+
+        String CVV = getRandomNumber(3);
+        String password = getRandomNumber(4);
 
         switch (cardType) {
 
@@ -35,14 +38,14 @@ public class CardServiceImpl implements CardService {
 
                 bankCardRepository.save(BankCard.builder()
                         .individual(individual)
-                        .CVV(bCryptPasswordEncoder.encode(getRandomNumber(3)))
+                        .CVV(bCryptPasswordEncoder.encode(CVV))
                         .cardName(individual.getName().toUpperCase() + " " + individual.getSurname().toUpperCase())
                         .cardNumber(generateCardNum(CARD_TYPE.VISA))//todo можешь посидеть поискать как правильно генерировать
                         .cardType(cardType)
-                        .password(bCryptPasswordEncoder.encode(getRandomNumber(4)))
+                        .password(bCryptPasswordEncoder.encode(password))
                         .validity(LocalDate.now().plusMonths(48L))
                         .corporate(false)
-                        .bankAccount(individual.getBankAccounts().get(bankAccNumber + 1))
+                        .bankAccount(individual.getBankAccounts().get(bankAccNumber - 1))
                         .build());
 
             }
@@ -50,13 +53,13 @@ public class CardServiceImpl implements CardService {
             case MAESTRO -> {
                 bankCardRepository.save(BankCard.builder()
                         .individual(individual)
-                        .CVV(bCryptPasswordEncoder.encode(getRandomNumber(3)))
+                        .CVV(bCryptPasswordEncoder.encode(CVV))
                         .cardName(individual.getName().toUpperCase() + " " + individual.getSurname().toUpperCase())
                         .cardNumber(generateCardNum(CARD_TYPE.MAESTRO))
                         .cardType(cardType)
-                        .password(bCryptPasswordEncoder.encode(getRandomNumber(4)))
+                        .password(bCryptPasswordEncoder.encode(password))
                         .validity(LocalDate.now().plusMonths(24L))
-                        .bankAccount(individual.getBankAccounts().get(bankAccNumber + 1))
+                        .bankAccount(individual.getBankAccounts().get(bankAccNumber - 1))
                         .corporate(false)
                         .build());
 
@@ -65,13 +68,13 @@ public class CardServiceImpl implements CardService {
             case MASTERCARD -> {
                 bankCardRepository.save(BankCard.builder()
                         .individual(individual)
-                        .CVV(bCryptPasswordEncoder.encode(getRandomNumber(3)))
+                        .CVV(bCryptPasswordEncoder.encode(CVV))
                         .cardName(individual.getName().toUpperCase() + " " + individual.getSurname().toUpperCase())
                         .cardNumber(generateCardNum(CARD_TYPE.MASTERCARD))
                         .cardType(cardType)
-                        .password(bCryptPasswordEncoder.encode(getRandomNumber(4)))
+                        .password(bCryptPasswordEncoder.encode(password))
                         .validity(LocalDate.now().plusMonths(36L))
-                        .bankAccount(individual.getBankAccounts().get(bankAccNumber + 1))
+                        .bankAccount(individual.getBankAccounts().get(bankAccNumber - 1))
                         .corporate(false)
                         .build());
             }
@@ -79,11 +82,15 @@ public class CardServiceImpl implements CardService {
 
         }
 
-
+        return "CVV: " + CVV + " PASSWORD: " + password + "\n USER " + individual.getName().toUpperCase() + " "
+                + individual.getSurname().toUpperCase() + " " + individual.getThirdName().toUpperCase();
     }
 
     @Override
-    public void createEntityCard(Entity entity, Individual individual, CARD_TYPE cardType, Integer bankAccNumber) {
+    public String createEntityCard(Entity entity, Individual individual, CARD_TYPE cardType, Integer bankAccNumber) {
+
+        String CVV = getRandomNumber(3);
+        String password = getRandomNumber(4);
 
         switch (cardType) {
 
@@ -92,13 +99,13 @@ public class CardServiceImpl implements CardService {
                 bankCardRepository.save(BankCard.builder()
                         .entity(entity)
                         .individual(individual)
-                        .CVV(bCryptPasswordEncoder.encode(getRandomNumber(3)))
+                        .CVV(bCryptPasswordEncoder.encode(CVV))
                         .cardName(individual.getName().toUpperCase() + " " + individual.getSurname().toUpperCase())
                         .cardNumber(generateCardNum(CARD_TYPE.VISA))//todo можешь посидеть поискать как правильно генерировать
                         .cardType(cardType)
-                        .password(bCryptPasswordEncoder.encode(getRandomNumber(4)))
+                        .password(bCryptPasswordEncoder.encode(password))
                         .validity(LocalDate.now().plusMonths(48L))
-                        .bankAccount(entity.getBankAccounts().get(bankAccNumber + 1))
+                        .bankAccount(entity.getBankAccounts().get(bankAccNumber - 1))
                         .corporate(true)
                         .build());
 
@@ -108,13 +115,13 @@ public class CardServiceImpl implements CardService {
                 bankCardRepository.save(BankCard.builder()
                         .entity(entity)
                         .individual(individual)
-                        .CVV(bCryptPasswordEncoder.encode(getRandomNumber(3)))
+                        .CVV(bCryptPasswordEncoder.encode(CVV))
                         .cardName(individual.getName().toUpperCase() + " " + individual.getSurname().toUpperCase())
                         .cardNumber(generateCardNum(CARD_TYPE.MAESTRO))
                         .cardType(cardType)
-                        .password(bCryptPasswordEncoder.encode(getRandomNumber(4)))
+                        .password(bCryptPasswordEncoder.encode(password))
                         .validity(LocalDate.now().plusMonths(24L))
-                        .bankAccount(entity.getBankAccounts().get(bankAccNumber + 1))
+                        .bankAccount(entity.getBankAccounts().get(bankAccNumber - 1))
                         .corporate(true)
                         .build());
 
@@ -124,13 +131,13 @@ public class CardServiceImpl implements CardService {
                 bankCardRepository.save(BankCard.builder()
                         .entity(entity)
                         .individual(individual)
-                        .CVV(bCryptPasswordEncoder.encode(getRandomNumber(3)))
+                        .CVV(bCryptPasswordEncoder.encode(CVV))
                         .cardName(individual.getName().toUpperCase() + " " + individual.getSurname().toUpperCase())
                         .cardNumber(generateCardNum(CARD_TYPE.MASTERCARD))
                         .cardType(cardType)
-                        .password(bCryptPasswordEncoder.encode(getRandomNumber(4)))
+                        .password(bCryptPasswordEncoder.encode(password))
                         .validity(LocalDate.now().plusMonths(36L))
-                        .bankAccount(entity.getBankAccounts().get(bankAccNumber + 1))
+                        .bankAccount(entity.getBankAccounts().get(bankAccNumber - 1))
                         .corporate(true)
                         .build());
             }
@@ -138,7 +145,8 @@ public class CardServiceImpl implements CardService {
 
         }
 
-
+        return "CVV: " + CVV + " PASSWORD: " + password + "\n USER " + individual.getName().toUpperCase() + " "
+                + individual.getSurname().toUpperCase() + " " + individual.getThirdName().toUpperCase();
     }
 
 

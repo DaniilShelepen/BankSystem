@@ -1,7 +1,7 @@
 package com.daniil.bank.demo.dal.entity;
 
 import com.daniil.bank.demo.dal.entity.natural.Individual;
-import com.daniil.bank.demo.enums.CREDIT_STATUS;
+import com.daniil.bank.demo.enums.OPERATION_STATUS;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,5 +36,6 @@ public class Operation {
     private String description;
     private BigDecimal sum;
     private Date date;
-    private CREDIT_STATUS credit_status;
+    @Enumerated(EnumType.STRING)
+    private OPERATION_STATUS operation_status;
 }

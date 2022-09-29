@@ -22,43 +22,53 @@ public class IndividualServiceImpl implements IndividualService {
 
     @Transactional
     @Override
-    public void payByIBAN(String iban, BigDecimal sum, String cardNum) {
+    public void payByIBAN(String iban, BigDecimal sum, String cardNum, Long individualID) {
 
         BankAccount acceptBankAccount = bankAccountRepository.findBankAccountByIBAN(iban);
 
         BankAccount givingBankAccount = Optional.ofNullable(bankCardRepository.findByCardNumber(cardNum).getBankAccount())
                 .orElseThrow(RuntimeException::new);//todo
+        if (yourCard(individualID, givingBankAccount)) throw new RuntimeException();
 
+        balanceOperation(sum, givingBankAccount, acceptBankAccount);
+
+    }
+
+    @Override
+    public void onlinePay(String givingCardNumber, String acceptCardNumber, String CVV, LocalDate validity, BigDecimal sum, Long individualID) {
+
+        BankAccount givingBankAccount = Optional.ofNullable(bankCardRepository.findByCardNumber(givingCardNumber).getBankAccount())
+                .orElseThrow(RuntimeException::new);//todo
+
+        if (yourCard(individualID, givingBankAccount)) throw new RuntimeException();
+
+
+        BankAccount acceptBankAccount = bankCardRepository.findByCardNumber(acceptCardNumber).getBankAccount();
+
+        balanceOperation(sum, givingBankAccount, acceptBankAccount);
+
+    }
+
+    private void balanceOperation(BigDecimal sum, BankAccount givingBankAccount, BankAccount acceptBankAccount) {
         if (givingBankAccount.getBalance().compareTo(sum) < 0)
             throw new RuntimeException();//todo
+
+        givingBankAccount.setBalance(givingBankAccount.getBalance().subtract(sum));
+        bankAccountRepository.save(givingBankAccount);
+
         if (acceptBankAccount != null) {
-
-            givingBankAccount.setBalance(givingBankAccount.getBalance().subtract(sum));
-            bankAccountRepository.save(givingBankAccount);
-
             acceptBankAccount.setBalance(acceptBankAccount.getBalance().add(sum));
             bankAccountRepository.save(acceptBankAccount);
         }
-
-
-//ищем в моем банке
-        //если есть - кидаем на счёт ибана и списываем
-        //если нет - просто так списываем
     }
 
     @Override
-    public void onlinePay(String cardNumber, String cardName, String CVV, LocalDate validity, BigDecimal sum) {
-
-    }
-
-    @Override
-    public void moneyTransfer(String cardNumber, BigDecimal sum) {
+    public void moneyTransfer(String givingCardNumber, String acceptCardNumber, BigDecimal sum, Long individualID) {
 
     }
 
 
-    private static void access() {
-
+    private boolean yourCard(Long individualID, BankAccount bankAccount) {
+        return !bankAccount.getIndividual().getId().equals(individualID);
     }
-
 }
