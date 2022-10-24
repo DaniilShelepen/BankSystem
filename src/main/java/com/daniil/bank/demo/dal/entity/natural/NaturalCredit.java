@@ -1,5 +1,6 @@
 package com.daniil.bank.demo.dal.entity.natural;
 
+import com.daniil.bank.demo.dal.entity.role.Manager;
 import com.daniil.bank.demo.enums.CLIENT_STATUS;
 import com.daniil.bank.demo.enums.CREDIT_STATUS;
 import com.daniil.bank.demo.enums.CURRENCY;
@@ -45,6 +46,10 @@ public class NaturalCredit {//еще раз проверь что все пол�
     //   private boolean fixedInterestRate;//фиксированная процентная ставка
 
     @ManyToOne
-    private Individual individual;
+    private IndividualUser individualUser;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "last_modified_by")
+    //@LastModifiedBy
+    private Manager manager;
 }

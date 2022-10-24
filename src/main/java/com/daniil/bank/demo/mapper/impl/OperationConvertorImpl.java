@@ -12,13 +12,13 @@ public class OperationConvertorImpl implements OperationConvertor {
     public OperationDto convert(Operation operation) {
 
 
-        if (operation.getEntity() == null) {
-            return new OperationDto(operation.getIndividual().getName().toUpperCase() + " " +
-                    operation.getIndividual().getSurname().toUpperCase() + " " +
-                    operation.getIndividual().getThirdName().toUpperCase(), operation.getDescription(),
+        if (operation.getEntityUser() == null) {
+            return new OperationDto(operation.getIndividualUser().getName().toUpperCase() + " " +
+                    operation.getIndividualUser().getSurname().toUpperCase() + " " +
+                    operation.getIndividualUser().getThirdName().toUpperCase(), operation.getDescription(),
                     operation.getSum(), operation.getDate(), operation.getOperation_status());
         } else {
-            return new OperationDto(operation.getEntity().getName().toUpperCase(), operation.getDescription(),
+            return new OperationDto(operation.getEntityUser().getName().toUpperCase(), operation.getDescription(),
                     operation.getSum(), operation.getDate(), operation.getOperation_status());
         }
 

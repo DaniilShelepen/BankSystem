@@ -1,10 +1,9 @@
 package com.daniil.bank.demo.mapper.impl;
 
-import com.daniil.bank.demo.dal.entity.natural.Individual;
+import com.daniil.bank.demo.dal.entity.natural.IndividualUser;
 import com.daniil.bank.demo.dto.IndividualDto;
 import com.daniil.bank.demo.mapper.IndividualConvertor;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +19,7 @@ public class IndividualConvertorImpl implements IndividualConvertor {
     }
 
     @Override
-    public IndividualDto convert(Individual individual) {
-        return mapper.map(individual, IndividualDto.class);
+    public IndividualDto convert(IndividualUser individualUser) {
+        return mapper.map(individualUser, IndividualDto.class);
     }
 }

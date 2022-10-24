@@ -69,6 +69,6 @@ public class IndividualServiceImpl implements IndividualService {
 
 
     private boolean yourCard(Long individualID, BankAccount bankAccount) {
-        return !bankAccount.getIndividual().getId().equals(individualID);
+        return !bankAccount.getIndividualUser().getId().equals(individualID);
     }
 }

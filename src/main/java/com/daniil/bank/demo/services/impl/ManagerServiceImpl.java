@@ -1,10 +1,10 @@
 package com.daniil.bank.demo.services.impl;
 
 import com.daniil.bank.demo.dal.entity.BankAccount;
-import com.daniil.bank.demo.dal.entity.legal.Entity;
+import com.daniil.bank.demo.dal.entity.legal.EntityUser;
 import com.daniil.bank.demo.dal.entity.legal.LegalOffer;
 import com.daniil.bank.demo.dal.entity.natural.Guarantor;
-import com.daniil.bank.demo.dal.entity.natural.Individual;
+import com.daniil.bank.demo.dal.entity.natural.IndividualUser;
 import com.daniil.bank.demo.dal.entity.natural.NaturalOffer;
 import com.daniil.bank.demo.dal.repository.*;
 import com.daniil.bank.demo.dto.*;
@@ -51,25 +51,25 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public IndividualDto createIndividual(IndividualDto individualDto, CURRENCY currency) {
-        Individual individualDB = individualRepository
+        IndividualUser individualUserDB = individualRepository
                 .findByPassportIDAndPassportSeries(individualDto.getPassportID(), individualDto.getPassportSeries());
 
-        if (individualDB != null) {//todo посмотри как можно переделать
-            if ((int) individualDB.getBankAccounts().stream()
+        if (individualUserDB != null) {//todo посмотри как можно переделать
+            if ((int) individualUserDB.getBankAccounts().stream()
                     .filter(bankAccount -> bankAccount.getCurrency().equals(currency)).count() == 0) {
                 bankAccountRepository.save(BankAccount.builder()
                         .balance(BigDecimal.ZERO)
                         .IBAN(getIban())
-                        .individual(individualDB)
+                        .individualUser(individualUserDB)
                         .currency(currency)
                         .accountStatus(ACCOUNT_STATUS.ACTIVE)
                         .build());
-                return individualConvertor.convert(individualDB);
+                return individualConvertor.convert(individualUserDB);
             }
-            return individualConvertor.convert(individualDB);
+            return individualConvertor.convert(individualUserDB);
         }
 
-        Individual newIndividual = individualRepository.save(Individual.builder()
+        IndividualUser newIndividualUser = individualRepository.save(IndividualUser.builder()
                 .name(individualDto.getName().toUpperCase())
                 .surname(individualDto.getSurname().toUpperCase())
                 .thirdName(individualDto.getThirdName().toUpperCase())
@@ -82,12 +82,12 @@ public class ManagerServiceImpl implements ManagerService {
         bankAccountRepository.save(BankAccount.builder()
                 .balance(BigDecimal.ZERO)
                 .IBAN(getIban())
-                .individual(newIndividual)
+                .individualUser(newIndividualUser)
                 .currency(currency)
                 .accountStatus(ACCOUNT_STATUS.ACTIVE)
                 .build());
 
-        return individualConvertor.convert(newIndividual);
+        return individualConvertor.convert(newIndividualUser);
     }
 
     @Override
@@ -110,40 +110,40 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public EntityDto createEntity(EntityDto entityDto, CURRENCY currency) {
-        Entity entityDB = entityRepository.findByName(entityDto.getName().toUpperCase());
+        EntityUser entityUserDB = entityRepository.findByName(entityDto.getName().toUpperCase());
 
-        if (entityDB != null) {//todo посмотри как можно переделать
-            if ((int) entityDB.getBankAccounts().stream()
+        if (entityUserDB != null) {//todo посмотри как можно переделать
+            if ((int) entityUserDB.getBankAccounts().stream()
                     .filter(bankAccount -> bankAccount.getCurrency().equals(currency)).count() == 0) {
                 bankAccountRepository.save(BankAccount.builder()
                         .balance(BigDecimal.ZERO)
                         .IBAN(getIban())
-                        .entity(entityDB)
+                        .entityUser(entityUserDB)
                         .currency(currency)
                         .accountStatus(ACCOUNT_STATUS.ACTIVE)
                         .build());
-                return entityConvertor.convert(entityDB);
+                return entityConvertor.convert(entityUserDB);
             }
-            return entityConvertor.convert(entityDB);
+            return entityConvertor.convert(entityUserDB);
         }
 
 
-        Entity newEntity = entityRepository.save(Entity.builder()
+        EntityUser newEntityUser = entityRepository.save(EntityUser.builder()
                 .name(entityDto.getName().toUpperCase())
                 .address(entityDto.getAddress().toUpperCase())
                 .clientStatus(CLIENT_STATUS.GENERAL)
-                .phone(entityDto.getPhone())
+                .phoneNumber(entityDto.getPhone())
                 .typeOfOwn(entityDto.getTypeOfOwn())
                 .build());
 
         bankAccountRepository.save(BankAccount.builder()
                 .balance(BigDecimal.ZERO)
                 .IBAN(getIban())
-                .entity(newEntity)
+                .entityUser(newEntityUser)
                 .currency(currency)
                 .accountStatus(ACCOUNT_STATUS.ACTIVE)
                 .build());
-        return entityConvertor.convert(newEntity);
+        return entityConvertor.convert(newEntityUser);
     }
 
     @Override
@@ -166,7 +166,7 @@ public class ManagerServiceImpl implements ManagerService {
 
         IndividualDto clientDto = createIndividual(individualDto, credit.getCurrency());
 
-        Individual client = individualRepository
+        IndividualUser client = individualRepository
                 .findByPassportIDAndPassportSeries(clientDto.getPassportID().toUpperCase(), clientDto.getPassportSeries().toUpperCase());
 
         if (client.getClientStatus().compareTo(credit.getClientStatus()) <= 0)
@@ -185,7 +185,7 @@ public class ManagerServiceImpl implements ManagerService {
 
         EntityDto clientDto = createEntity(entityDto, credit.getCurrency());
 
-        Entity client = entityRepository.findByName(clientDto.getName().toUpperCase());
+        EntityUser client = entityRepository.findByName(clientDto.getName().toUpperCase());
 
         contractService.legalContract(client, credit, sum);
 
@@ -196,11 +196,11 @@ public class ManagerServiceImpl implements ManagerService {
 
         EntityDto client1Dto = createEntity(entityDto, CURRENCY.BYN);
 
-        Entity client1 = entityRepository.findByName(client1Dto.getName().toUpperCase());
+        EntityUser client1 = entityRepository.findByName(client1Dto.getName().toUpperCase());
 
         IndividualDto client2Dto = createIndividual(individualDto, CURRENCY.BYN);
 
-        Individual client2 = individualRepository
+        IndividualUser client2 = individualRepository
                 .findByPassportIDAndPassportSeries(client2Dto.getPassportID(), client2Dto.getPassportSeries());
 
         cardService.createEntityCard(client1, client2, cardType, bankAccNum - 1);
@@ -212,7 +212,7 @@ public class ManagerServiceImpl implements ManagerService {
     public void createIndividualCard(IndividualDto individualDto, CARD_TYPE cardType, Integer bankAccNum) {
         IndividualDto clientDto = createIndividual(individualDto, CURRENCY.BYN);
 
-        Individual client = individualRepository
+        IndividualUser client = individualRepository
                 .findByPassportIDAndPassportSeries(clientDto.getPassportID(), clientDto.getPassportSeries());
 
         cardService.createIndividualCard(client, cardType, bankAccNum - 1);
@@ -222,27 +222,27 @@ public class ManagerServiceImpl implements ManagerService {
     @Override
     public List<BankAccountDto> getIndividualBankAccList(String passportID, String passportSeries) {
 
-        Individual client = Optional.ofNullable(individualRepository.findByPassportIDAndPassportSeries(passportID.toUpperCase(),
+        IndividualUser client = Optional.ofNullable(individualRepository.findByPassportIDAndPassportSeries(passportID.toUpperCase(),
                 passportSeries.toUpperCase())).orElseThrow(RuntimeException::new);//todo
 
-        return bankAccountRepository.findAllByIndividual(client).stream()
+        return bankAccountRepository.findAllByIndividualUser(client).stream()
                 .map(bankAccountConvertor::convert).collect(Collectors.toList());
     }
 
     @Override
     public List<BankAccountDto> getEntityBankAccList(String name) {
 
-        Entity client = Optional.ofNullable(entityRepository.findByName(name.toUpperCase()))
+        EntityUser client = Optional.ofNullable(entityRepository.findByName(name.toUpperCase()))
                 .orElseThrow(RuntimeException::new);//todo
 
-        return bankAccountRepository.findAllByEntity(client).stream().map(bankAccountConvertor::convert)
+        return bankAccountRepository.findAllByEntityUser(client).stream().map(bankAccountConvertor::convert)
                 .collect(Collectors.toList());
     }
 
     @Override
     public String getIndividualINFO(String passportID, String passportSeries) {
 
-        Individual client = Optional.ofNullable(individualRepository
+        IndividualUser client = Optional.ofNullable(individualRepository
                         .findByPassportIDAndPassportSeries(passportID.toUpperCase(), passportSeries.toUpperCase()))
                 .orElseThrow(RuntimeException::new);//todo
 
@@ -254,9 +254,9 @@ public class ManagerServiceImpl implements ManagerService {
     @Override
     public String getEntityINFO(String name) {
 
-        Entity entity = Optional.ofNullable(entityRepository.findByName(name.toUpperCase())).orElseThrow(() -> new ManagerException("No such Entity found"));
+        EntityUser entityUser = Optional.ofNullable(entityRepository.findByName(name.toUpperCase())).orElseThrow(() -> new ManagerException("No such Entity found"));
 
-        return entity.getName() + "\n" + entity.getAddress() + "\n" + entity.getPhone();
+        return entityUser.getName() + "\n" + entityUser.getAddress() + "\n" + entityUser.getPhoneNumber();
     }
 
     private String getIban() {

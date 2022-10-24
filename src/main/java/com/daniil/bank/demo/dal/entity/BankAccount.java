@@ -1,7 +1,8 @@
 package com.daniil.bank.demo.dal.entity;
 
-import com.daniil.bank.demo.dal.entity.legal.Entity;
-import com.daniil.bank.demo.dal.entity.natural.Individual;
+import com.daniil.bank.demo.dal.entity.legal.EntityUser;
+import com.daniil.bank.demo.dal.entity.natural.IndividualUser;
+import com.daniil.bank.demo.dal.entity.role.Manager;
 import com.daniil.bank.demo.enums.ACCOUNT_STATUS;
 import com.daniil.bank.demo.enums.CURRENCY;
 import lombok.AllArgsConstructor;
@@ -14,7 +15,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 
-@javax.persistence.Entity
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
@@ -37,8 +38,15 @@ public class BankAccount {
     List<BankCard> bankCard;
 
     @ManyToOne
-    Individual individual;
+    IndividualUser individualUser;
 
     @ManyToOne
-    Entity entity;
+    EntityUser entityUser;
+
+    @OneToMany(mappedBy = "bankAccount")
+    List<Operation> operations;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    //@LastModifiedBy
+    private Manager manager;
 }

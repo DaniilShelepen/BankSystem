@@ -1,7 +1,8 @@
 package com.daniil.bank.demo.dal.entity;
 
-import com.daniil.bank.demo.dal.entity.legal.Entity;
-import com.daniil.bank.demo.dal.entity.natural.Individual;
+import com.daniil.bank.demo.dal.entity.legal.EntityUser;
+import com.daniil.bank.demo.dal.entity.natural.IndividualUser;
+import com.daniil.bank.demo.dal.entity.role.Manager;
 import com.daniil.bank.demo.enums.CARD_TYPE;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +14,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.time.LocalDate;
 
-@javax.persistence.Entity
+@Entity
 @Getter
 @Setter
 @AllArgsConstructor
@@ -39,7 +40,11 @@ public class BankCard {
     BankAccount bankAccount;
 
     @OneToOne
-    Individual individual;
+    IndividualUser individualUser;
     @ManyToOne
-    Entity entity;
+    EntityUser entityUser;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    //@LastModifiedBy
+    private Manager manager;
 }

@@ -1,5 +1,6 @@
 package com.daniil.bank.demo.dal.entity.legal;
 
+import com.daniil.bank.demo.dal.entity.role.Manager;
 import com.daniil.bank.demo.enums.CLIENT_STATUS;
 import com.daniil.bank.demo.enums.CREDIT_STATUS;
 import com.daniil.bank.demo.enums.CURRENCY;
@@ -14,7 +15,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@javax.persistence.Entity
+@Entity
 @Getter
 @Setter
 @AllArgsConstructor
@@ -43,5 +44,10 @@ public class LegalCredit {
     //   private boolean fixedInterestRate;//фиксированная процентная ставка
 
     @ManyToOne
-    private Entity entity;
+    private EntityUser entityUser;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "last_modified_by")
+    //@LastModifiedBy
+    private Manager manager;
 }

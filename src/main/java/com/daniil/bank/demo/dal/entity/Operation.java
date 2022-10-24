@@ -1,6 +1,7 @@
 package com.daniil.bank.demo.dal.entity;
 
-import com.daniil.bank.demo.dal.entity.natural.Individual;
+import com.daniil.bank.demo.dal.entity.legal.EntityUser;
+import com.daniil.bank.demo.dal.entity.natural.IndividualUser;
 import com.daniil.bank.demo.enums.OPERATION_STATUS;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,11 +27,11 @@ public class Operation {
 
     @ManyToOne
     @JoinColumn(name = "individual_id")
-    private Individual individual;
+    private IndividualUser individualUser;
 
     @ManyToOne
     @JoinColumn(name = "entity_id")
-    private com.daniil.bank.demo.dal.entity.legal.Entity entity;
+    private EntityUser entityUser;
 
 
     private String description;
@@ -38,4 +39,7 @@ public class Operation {
     private Date date;
     @Enumerated(EnumType.STRING)
     private OPERATION_STATUS operation_status;
+
+    @ManyToOne
+    BankAccount bankAccount;
 }

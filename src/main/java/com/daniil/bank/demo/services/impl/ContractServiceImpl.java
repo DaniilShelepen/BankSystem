@@ -1,10 +1,10 @@
 package com.daniil.bank.demo.services.impl;
 
-import com.daniil.bank.demo.dal.entity.legal.Entity;
+import com.daniil.bank.demo.dal.entity.legal.EntityUser;
 import com.daniil.bank.demo.dal.entity.legal.LegalCredit;
 import com.daniil.bank.demo.dal.entity.legal.LegalOffer;
 import com.daniil.bank.demo.dal.entity.natural.Guarantor;
-import com.daniil.bank.demo.dal.entity.natural.Individual;
+import com.daniil.bank.demo.dal.entity.natural.IndividualUser;
 import com.daniil.bank.demo.dal.entity.natural.NaturalCredit;
 import com.daniil.bank.demo.dal.entity.natural.NaturalOffer;
 import com.daniil.bank.demo.dal.repository.GuarantorRepository;
@@ -33,7 +33,7 @@ public class ContractServiceImpl implements ContractService {
 
 
     @Override
-    public void individualContract(Individual client, NaturalOffer credit, Guarantor guarantor, BigDecimal sum) {
+    public void individualContract(IndividualUser client, NaturalOffer credit, Guarantor guarantor, BigDecimal sum) {
 
 
         String number;
@@ -55,7 +55,7 @@ public class ContractServiceImpl implements ContractService {
                         .forfeit(BigDecimal.ZERO)
                         .number(number)
                         .guarantor(null)
-                        .individual(client)
+                        .individualUser(client)
                         .build());
 
             }
@@ -74,7 +74,7 @@ public class ContractServiceImpl implements ContractService {
                         .forfeit(BigDecimal.ZERO)
                         .number(number)
                         .guarantor(guarantor)
-                        .individual(client)
+                        .individualUser(client)
                         .build());
 
                 guarantor.setAvailable(false);
@@ -92,7 +92,7 @@ public class ContractServiceImpl implements ContractService {
                         .forfeit(BigDecimal.ZERO)
                         .number(number)
                         .guarantor(null)
-                        .individual(client)
+                        .individualUser(client)
                         .build());
             }
 
@@ -110,7 +110,7 @@ public class ContractServiceImpl implements ContractService {
                         .forfeit(BigDecimal.ZERO)
                         .number(number)
                         .guarantor(guarantor)
-                        .individual(client)
+                        .individualUser(client)
                         .build());
 
                 guarantor.setAvailable(false);
@@ -123,7 +123,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public void legalContract(Entity client, LegalOffer credit, BigDecimal sum) {
+    public void legalContract(EntityUser client, LegalOffer credit, BigDecimal sum) {
 
         String number;
         do {
@@ -137,7 +137,7 @@ public class ContractServiceImpl implements ContractService {
 
             case REGULAR -> {
                 legalCreditRepository.save(LegalCredit.builder()
-                        .entity(client)
+                        .entityUser(client)
                         .number(number)
                         .forfeit(BigDecimal.ZERO)
                         .status(CREDIT_STATUS.PROCESSING)
@@ -152,7 +152,7 @@ public class ContractServiceImpl implements ContractService {
 
             case VIP -> {
                 legalCreditRepository.save(LegalCredit.builder()
-                        .entity(client)
+                        .entityUser(client)
                         .number(number)
                         .forfeit(BigDecimal.ZERO)
                         .status(CREDIT_STATUS.PROCESSING)
@@ -168,7 +168,7 @@ public class ContractServiceImpl implements ContractService {
 
             default -> {
                 legalCreditRepository.save(LegalCredit.builder()
-                        .entity(client)
+                        .entityUser(client)
                         .number(number)
                         .forfeit(BigDecimal.ZERO)
                         .status(CREDIT_STATUS.PROCESSING)

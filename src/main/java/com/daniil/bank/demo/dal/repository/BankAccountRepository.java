@@ -1,8 +1,8 @@
 package com.daniil.bank.demo.dal.repository;
 
 import com.daniil.bank.demo.dal.entity.BankAccount;
-import com.daniil.bank.demo.dal.entity.legal.Entity;
-import com.daniil.bank.demo.dal.entity.natural.Individual;
+import com.daniil.bank.demo.dal.entity.legal.EntityUser;
+import com.daniil.bank.demo.dal.entity.natural.IndividualUser;
 import com.daniil.bank.demo.enums.ACCOUNT_STATUS;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -14,9 +14,9 @@ public interface BankAccountRepository extends JpaRepository<BankAccount, Long> 
 
     BankAccount findBankAccountByIBANAndAccountStatus(String IBAN, ACCOUNT_STATUS accountStatus);
 
-    List<BankAccount> findAllByIndividual(Individual individual);
+    List<BankAccount> findAllByIndividualUser(IndividualUser individualUser);
 
-    List<BankAccount> findAllByEntity(Entity entity);
+    List<BankAccount> findAllByEntityUser(EntityUser entityUser);
 
 
 }

@@ -1,6 +1,11 @@
 package com.daniil.bank.demo.dal.entity.natural;
 
+import com.daniil.bank.demo.dal.entity.BankAccount;
+import com.daniil.bank.demo.dal.entity.BankCard;
+import com.daniil.bank.demo.dal.entity.Lawsuits;
 import com.daniil.bank.demo.dal.entity.role.Manager;
+import com.daniil.bank.demo.dal.entity.role.User;
+import com.daniil.bank.demo.enums.CLIENT_STATUS;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,16 +14,15 @@ import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
-import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @SuperBuilder
-public class Guarantor {
+public class IndividualUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -27,23 +31,29 @@ public class Guarantor {
     private String name;
     private String surname;
     private String thirdName;
-
     @Size(min = 2, max = 2)
     private String passportSeries;
-
     @Size(min = 7, max = 7)
     private String passportID;
     private String address;
-
     @Size(min = 13, max = 13)
     private String phoneNumber;
+    @Enumerated(EnumType.STRING)
+    private CLIENT_STATUS clientStatus;
 
-    private String estate;// имущество под залог
-    private BigDecimal approximateCost; //примерная цена залога
-    private boolean available;
+    @OneToMany(mappedBy = "individualUser", cascade = CascadeType.ALL)
+    List<NaturalCredit> naturalCreditList;
+    @OneToMany(mappedBy = "individualUser", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    List<BankAccount> bankAccounts;
 
-    @OneToMany(mappedBy = "guarantor", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
-    private List<NaturalCredit> creditList;
+    @OneToOne(mappedBy = "individualUser", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    BankCard bankCard;
+
+    @OneToOne
+    User user;
+
+    @OneToMany(mappedBy = "individualUser")
+    List<Lawsuits> lawsuits;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "last_modified_by")
