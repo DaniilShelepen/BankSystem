@@ -38,7 +38,7 @@ public class ContractServiceImpl implements ContractService {
 
         String number;
         do {
-            number = getRandomNumber(20);
+            number = getRandomNumber();
         } while (naturalCreditRepository.findByNumber(number) != null);
 
 
@@ -47,6 +47,7 @@ public class ContractServiceImpl implements ContractService {
             case BENEFIT -> {
                 naturalCreditRepository.save(NaturalCredit.builder()
                         .sum(sum)
+                        .monthlyPayment(sum.divide(BigDecimal.valueOf(credit.getTimeMonth())))
                         .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))//todo тут посмотри как поставить последний день получившегося месяца
                         .status(CREDIT_STATUS.PROCESSING)
                         .clientStatus(client.getClientStatus())
@@ -66,6 +67,7 @@ public class ContractServiceImpl implements ContractService {
 
                 naturalCreditRepository.save(NaturalCredit.builder()
                         .sum(sum)
+                        .monthlyPayment(sum.divide(BigDecimal.valueOf(credit.getTimeMonth())))
                         .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))//todo тут посмотри как поставиьт последний день получившегося месяца
                         .status(CREDIT_STATUS.PROCESSING)
                         .clientStatus(client.getClientStatus())
@@ -84,6 +86,7 @@ public class ContractServiceImpl implements ContractService {
             case VIP -> {
                 naturalCreditRepository.save(NaturalCredit.builder()
                         .sum(sum)
+                        .monthlyPayment(sum.divide(BigDecimal.valueOf(credit.getTimeMonth())))
                         .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))//todo тут посмотри как поставить последний день получившегося месяца
                         .status(CREDIT_STATUS.PROCESSING)
                         .clientStatus(client.getClientStatus())
@@ -102,6 +105,7 @@ public class ContractServiceImpl implements ContractService {
 
                 naturalCreditRepository.save(NaturalCredit.builder()
                         .sum(sum)
+                        .monthlyPayment(sum.divide(BigDecimal.valueOf(credit.getTimeMonth())))
                         .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))//todo тут посмотри как поставиьт последний день получившегося месяца
                         .status(CREDIT_STATUS.PROCESSING)
                         .clientStatus(client.getClientStatus())
@@ -127,7 +131,7 @@ public class ContractServiceImpl implements ContractService {
 
         String number;
         do {
-            number = getRandomNumber(20);
+            number = getRandomNumber();
         } while (naturalCreditRepository.findByNumber(number) != null);
 
         if (client.getClientStatus().compareTo(credit.getClientStatus()) <= 0)
@@ -145,6 +149,7 @@ public class ContractServiceImpl implements ContractService {
                         .percentageRate((int) Math.round(credit.getPercentageRate() - (credit.getPercentageRate() * 0.25)))
                         .currency(credit.getCurrency())
                         .sum(sum)
+                        .monthlyPayment(sum.divide(BigDecimal.valueOf(credit.getTimeMonth())))
                         .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))
                         .build());
             }
@@ -160,6 +165,7 @@ public class ContractServiceImpl implements ContractService {
                         .percentageRate((int) Math.round(credit.getPercentageRate() - (credit.getPercentageRate() * 0.4)))
                         .currency(credit.getCurrency())
                         .sum(sum)
+                        .monthlyPayment(sum.divide(BigDecimal.valueOf(credit.getTimeMonth())))
                         .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))
                         .build());
 
@@ -176,6 +182,7 @@ public class ContractServiceImpl implements ContractService {
                         .percentageRate(credit.getPercentageRate())
                         .currency(credit.getCurrency())
                         .sum(sum)
+                        .monthlyPayment(sum.divide(BigDecimal.valueOf(credit.getTimeMonth())))
                         .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))
                         .build());
             }
@@ -184,11 +191,11 @@ public class ContractServiceImpl implements ContractService {
     }
 
 
-    private String getRandomNumber(int bound) {
+    private String getRandomNumber() {
 
         Random random = new Random();
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < bound; i++) {
+        for (int i = 0; i < 20; i++) {
             int number = random.nextInt(10);
             sb.append(number);
         }

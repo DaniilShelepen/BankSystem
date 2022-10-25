@@ -17,5 +17,7 @@ public interface IndividualService {
     void moneyTransfer(String cardNumber, String acceptCardNumber, BigDecimal sum, Long individualID);
 
 
+    void creditPay(String cardNumber, String creditNum, BigDecimal sum, Long individualID);
+
 }
 

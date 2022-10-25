@@ -68,6 +68,10 @@ public class ManagerServiceImpl implements ManagerService {
             }
             return individualConvertor.convert(individualUserDB);
         }
+        else{
+            //создай тут счет ему
+
+        }
 
         IndividualUser newIndividualUser = individualRepository.save(IndividualUser.builder()
                 .name(individualDto.getName().toUpperCase())

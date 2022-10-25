@@ -1,5 +1,6 @@
 package com.daniil.bank.demo.dal.entity.natural;
 
+import com.daniil.bank.demo.dal.entity.Payment;
 import com.daniil.bank.demo.dal.entity.role.Manager;
 import com.daniil.bank.demo.enums.CLIENT_STATUS;
 import com.daniil.bank.demo.enums.CREDIT_STATUS;
@@ -14,6 +15,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Getter
@@ -34,7 +36,7 @@ public class NaturalCredit {//еще раз проверь что все пол�
     @Enumerated(EnumType.STRING)
     private CLIENT_STATUS clientStatus;
     private BigDecimal sum;
-
+    private BigDecimal monthlyPayment;
     @DateTimeFormat(pattern = "dd.MM.yyyy")
     private LocalDate loanTerm;//срок до какого должен быть выплачен кредит
     private Integer percentageRate;// процентная ставка
@@ -47,6 +49,9 @@ public class NaturalCredit {//еще раз проверь что все пол�
 
     @ManyToOne
     private IndividualUser individualUser;
+
+    @OneToMany(mappedBy = "naturalCredit")
+    List<Payment> paymentList;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "last_modified_by")

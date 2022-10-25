@@ -1,8 +1,11 @@
 package com.daniil.bank.demo.services.impl;
 
 import com.daniil.bank.demo.dal.entity.BankAccount;
+import com.daniil.bank.demo.dal.entity.natural.NaturalCredit;
 import com.daniil.bank.demo.dal.repository.BankAccountRepository;
 import com.daniil.bank.demo.dal.repository.BankCardRepository;
+import com.daniil.bank.demo.dal.repository.NaturalCreditRepository;
+import com.daniil.bank.demo.services.BankAccountService;
 import com.daniil.bank.demo.services.IndividualService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,10 @@ public class IndividualServiceImpl implements IndividualService {
 
     private final BankCardRepository bankCardRepository;
 
+    private final BankAccountService bankAccountService;
+
+    private final NaturalCreditRepository naturalCreditRepository;
+
     @Transactional
     @Override
     public void payByIBAN(String iban, BigDecimal sum, String cardNum, Long individualID) {
@@ -28,47 +35,49 @@ public class IndividualServiceImpl implements IndividualService {
 
         BankAccount givingBankAccount = Optional.ofNullable(bankCardRepository.findByCardNumber(cardNum).getBankAccount())
                 .orElseThrow(RuntimeException::new);//todo
-        if (yourCard(individualID, givingBankAccount)) throw new RuntimeException();
 
-        balanceOperation(sum, givingBankAccount, acceptBankAccount);
+        verificationBankAccount(individualID, givingBankAccount);
+
+        bankAccountService.transaction(sum, givingBankAccount, acceptBankAccount);
 
     }
 
     @Override
     public void onlinePay(String givingCardNumber, String acceptCardNumber, String CVV, LocalDate validity, BigDecimal sum, Long individualID) {
 
+        BankAccount acceptBankAccount = bankCardRepository.findByCardNumber(acceptCardNumber).getBankAccount();
+
         BankAccount givingBankAccount = Optional.ofNullable(bankCardRepository.findByCardNumber(givingCardNumber).getBankAccount())
                 .orElseThrow(RuntimeException::new);//todo
 
-        if (yourCard(individualID, givingBankAccount)) throw new RuntimeException();
+        verificationBankAccount(individualID, givingBankAccount);
 
-
-        BankAccount acceptBankAccount = bankCardRepository.findByCardNumber(acceptCardNumber).getBankAccount();
-
-        balanceOperation(sum, givingBankAccount, acceptBankAccount);
+        bankAccountService.transaction(sum, givingBankAccount, acceptBankAccount);
 
     }
 
-    private void balanceOperation(BigDecimal sum, BankAccount givingBankAccount, BankAccount acceptBankAccount) {
-        if (givingBankAccount.getBalance().compareTo(sum) < 0)
-            throw new RuntimeException();//todo
-
-        givingBankAccount.setBalance(givingBankAccount.getBalance().subtract(sum));
-        bankAccountRepository.save(givingBankAccount);
-
-        if (acceptBankAccount != null) {
-            acceptBankAccount.setBalance(acceptBankAccount.getBalance().add(sum));
-            bankAccountRepository.save(acceptBankAccount);
-        }
-    }
 
     @Override
     public void moneyTransfer(String givingCardNumber, String acceptCardNumber, BigDecimal sum, Long individualID) {
 
     }
 
+    @Transactional
+    @Override
+    public void creditPay(String cardNumber, String creditNum, BigDecimal sum, Long individualID) {
+        NaturalCredit credit = Optional.ofNullable(naturalCreditRepository.findByNumber(creditNum))
+                .orElseThrow(RuntimeException::new);//todo
 
-    private boolean yourCard(Long individualID, BankAccount bankAccount) {
-        return !bankAccount.getIndividualUser().getId().equals(individualID);
+        BankAccount bankAccount = bankCardRepository.findByCardNumber(cardNumber).getBankAccount();
+
+        verificationBankAccount(individualID, bankAccount);
+
+        bankAccountService.naturalCredit(bankAccount, sum, credit);
+
+    }
+
+
+    private void verificationBankAccount(Long individualID, BankAccount bankAccount) {
+        if (!bankAccount.getIndividualUser().getId().equals(individualID)) throw new RuntimeException();//todo
     }
 }

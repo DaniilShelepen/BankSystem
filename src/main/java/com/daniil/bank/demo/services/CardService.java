@@ -11,5 +11,4 @@ public interface CardService {
 
     String createEntityCard(EntityUser entityUser, IndividualUser individualUser, CARD_TYPE cardType, Integer bankAccNumber);
 
-
 }

@@ -3,6 +3,7 @@ package com.daniil.bank.demo.dal.entity.legal;
 import com.daniil.bank.demo.dal.entity.BankAccount;
 import com.daniil.bank.demo.dal.entity.BankCard;
 import com.daniil.bank.demo.dal.entity.Lawsuits;
+import com.daniil.bank.demo.dal.entity.Payment;
 import com.daniil.bank.demo.dal.entity.role.Manager;
 import com.daniil.bank.demo.dal.entity.role.User;
 import com.daniil.bank.demo.enums.CLIENT_STATUS;
@@ -49,6 +50,9 @@ public class EntityUser {
 
     @OneToMany(mappedBy = "entityUser")
     List<Lawsuits> lawsuits;
+
+    @OneToMany(mappedBy = "entityUser")
+    List<Payment> payments;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "last_modified_by")

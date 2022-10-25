@@ -1,5 +1,6 @@
 package com.daniil.bank.demo.dal.entity.legal;
 
+import com.daniil.bank.demo.dal.entity.Payment;
 import com.daniil.bank.demo.dal.entity.role.Manager;
 import com.daniil.bank.demo.enums.CLIENT_STATUS;
 import com.daniil.bank.demo.enums.CREDIT_STATUS;
@@ -14,6 +15,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Getter
@@ -33,6 +35,7 @@ public class LegalCredit {
     @Enumerated(EnumType.STRING)
     private CLIENT_STATUS clientStatus;
     private BigDecimal sum;
+    private BigDecimal monthlyPayment;
 
     @DateTimeFormat(pattern = "dd.MM.yyyy")
     private LocalDate loanTerm;//срок до какого должен быть выплачен кредит
@@ -45,6 +48,10 @@ public class LegalCredit {
 
     @ManyToOne
     private EntityUser entityUser;
+
+
+    @OneToMany(mappedBy = "legalCredit")
+    List<Payment> paymentList;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "last_modified_by")
