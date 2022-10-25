@@ -25,7 +25,6 @@ public class Payment {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    String number;
     BigDecimal sum;
     LocalDate date;
 
