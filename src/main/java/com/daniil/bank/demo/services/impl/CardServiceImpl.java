@@ -5,11 +5,10 @@ import com.daniil.bank.demo.dal.entity.legal.EntityUser;
 import com.daniil.bank.demo.dal.entity.natural.IndividualUser;
 import com.daniil.bank.demo.dal.repository.BankCardRepository;
 import com.daniil.bank.demo.enums.CARD_TYPE;
+import com.daniil.bank.demo.security.PasswordEncoderConfig;
 import com.daniil.bank.demo.services.CardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -22,8 +21,8 @@ public class CardServiceImpl implements CardService {
 
     private final BankCardRepository bankCardRepository;
 
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    private final PasswordEncoderConfig passwordEncoderConfig;
 
     @Override
     public String createIndividualCard(IndividualUser individualUser, CARD_TYPE cardType, Integer bankAccNumber) {
@@ -38,14 +37,14 @@ public class CardServiceImpl implements CardService {
 
                 bankCardRepository.save(BankCard.builder()
                         .individualUser(individualUser)
-                        .CVV(bCryptPasswordEncoder.encode(CVV))
+                        .CVV(passwordEncoderConfig.passwordEncoder().encode(CVV))
                         .cardName(individualUser.getName().toUpperCase() + " " + individualUser.getSurname().toUpperCase())
                         .cardNumber(generateCardNum(CARD_TYPE.VISA))//todo можешь посидеть поискать как правильно генерировать
                         .cardType(cardType)
-                        .password(bCryptPasswordEncoder.encode(password))
+                        .password(passwordEncoderConfig.passwordEncoder().encode(password))
                         .validity(LocalDate.now().plusMonths(48L))
                         .corporate(false)
-                        .bankAccount(individualUser.getBankAccounts().get(bankAccNumber - 1))
+                        .bankAccount(individualUser.getBankAccounts().get(bankAccNumber))
                         .build());
 
             }
@@ -53,13 +52,13 @@ public class CardServiceImpl implements CardService {
             case MAESTRO -> {
                 bankCardRepository.save(BankCard.builder()
                         .individualUser(individualUser)
-                        .CVV(bCryptPasswordEncoder.encode(CVV))
+                        .CVV(passwordEncoderConfig.passwordEncoder().encode(CVV))
                         .cardName(individualUser.getName().toUpperCase() + " " + individualUser.getSurname().toUpperCase())
                         .cardNumber(generateCardNum(CARD_TYPE.MAESTRO))
                         .cardType(cardType)
-                        .password(bCryptPasswordEncoder.encode(password))
+                        .password(passwordEncoderConfig.passwordEncoder().encode(password))
                         .validity(LocalDate.now().plusMonths(24L))
-                        .bankAccount(individualUser.getBankAccounts().get(bankAccNumber - 1))
+                        .bankAccount(individualUser.getBankAccounts().get(bankAccNumber))
                         .corporate(false)
                         .build());
 
@@ -68,13 +67,13 @@ public class CardServiceImpl implements CardService {
             case MASTERCARD -> {
                 bankCardRepository.save(BankCard.builder()
                         .individualUser(individualUser)
-                        .CVV(bCryptPasswordEncoder.encode(CVV))
+                        .CVV(passwordEncoderConfig.passwordEncoder().encode(CVV))
                         .cardName(individualUser.getName().toUpperCase() + " " + individualUser.getSurname().toUpperCase())
                         .cardNumber(generateCardNum(CARD_TYPE.MASTERCARD))
                         .cardType(cardType)
-                        .password(bCryptPasswordEncoder.encode(password))
+                        .password(passwordEncoderConfig.passwordEncoder().encode(password))
                         .validity(LocalDate.now().plusMonths(36L))
-                        .bankAccount(individualUser.getBankAccounts().get(bankAccNumber - 1))
+                        .bankAccount(individualUser.getBankAccounts().get(bankAccNumber))
                         .corporate(false)
                         .build());
             }
@@ -99,13 +98,13 @@ public class CardServiceImpl implements CardService {
                 bankCardRepository.save(BankCard.builder()
                         .entityUser(entityUser)
                         .individualUser(individualUser)
-                        .CVV(bCryptPasswordEncoder.encode(CVV))
+                        .CVV(passwordEncoderConfig.passwordEncoder().encode(CVV))
                         .cardName(individualUser.getName().toUpperCase() + " " + individualUser.getSurname().toUpperCase())
                         .cardNumber(generateCardNum(CARD_TYPE.VISA))//todo можешь посидеть поискать как правильно генерировать
                         .cardType(cardType)
-                        .password(bCryptPasswordEncoder.encode(password))
+                        .password(passwordEncoderConfig.passwordEncoder().encode(password))
                         .validity(LocalDate.now().plusMonths(48L))
-                        .bankAccount(entityUser.getBankAccounts().get(bankAccNumber - 1))
+                        .bankAccount(entityUser.getBankAccounts().get(bankAccNumber))
                         .corporate(true)
                         .build());
 
@@ -115,13 +114,13 @@ public class CardServiceImpl implements CardService {
                 bankCardRepository.save(BankCard.builder()
                         .entityUser(entityUser)
                         .individualUser(individualUser)
-                        .CVV(bCryptPasswordEncoder.encode(CVV))
+                        .CVV(passwordEncoderConfig.passwordEncoder().encode(CVV))
                         .cardName(individualUser.getName().toUpperCase() + " " + individualUser.getSurname().toUpperCase())
                         .cardNumber(generateCardNum(CARD_TYPE.MAESTRO))
                         .cardType(cardType)
-                        .password(bCryptPasswordEncoder.encode(password))
+                        .password(passwordEncoderConfig.passwordEncoder().encode(password))
                         .validity(LocalDate.now().plusMonths(24L))
-                        .bankAccount(entityUser.getBankAccounts().get(bankAccNumber - 1))
+                        .bankAccount(entityUser.getBankAccounts().get(bankAccNumber))
                         .corporate(true)
                         .build());
 
@@ -131,13 +130,13 @@ public class CardServiceImpl implements CardService {
                 bankCardRepository.save(BankCard.builder()
                         .entityUser(entityUser)
                         .individualUser(individualUser)
-                        .CVV(bCryptPasswordEncoder.encode(CVV))
+                        .CVV(passwordEncoderConfig.passwordEncoder().encode(CVV))
                         .cardName(individualUser.getName().toUpperCase() + " " + individualUser.getSurname().toUpperCase())
                         .cardNumber(generateCardNum(CARD_TYPE.MASTERCARD))
                         .cardType(cardType)
-                        .password(bCryptPasswordEncoder.encode(password))
+                        .password(passwordEncoderConfig.passwordEncoder().encode(password))
                         .validity(LocalDate.now().plusMonths(36L))
-                        .bankAccount(entityUser.getBankAccounts().get(bankAccNumber - 1))
+                        .bankAccount(entityUser.getBankAccounts().get(bankAccNumber))
                         .corporate(true)
                         .build());
             }
