@@ -3,7 +3,7 @@ package com.daniil.bank.demo.services.impl;
 import com.daniil.bank.demo.dal.entity.legal.EntityUser;
 import com.daniil.bank.demo.dal.entity.legal.LegalCredit;
 import com.daniil.bank.demo.dal.entity.legal.LegalOffer;
-import com.daniil.bank.demo.dal.entity.natural.Guarantor;
+import com.daniil.bank.demo.dal.entity.Guarantor;
 import com.daniil.bank.demo.dal.entity.natural.IndividualUser;
 import com.daniil.bank.demo.dal.entity.natural.NaturalCredit;
 import com.daniil.bank.demo.dal.entity.natural.NaturalOffer;
@@ -15,7 +15,6 @@ import com.daniil.bank.demo.services.ContractService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Random;
 
@@ -33,7 +32,7 @@ public class ContractServiceImpl implements ContractService {
 
 
     @Override
-    public void individualContract(IndividualUser client, NaturalOffer credit, Guarantor guarantor, double sum) {
+    public void individualContract(IndividualUser client, NaturalOffer credit, Guarantor guarantor, double sum) {//todo посмотри как залог/поручитель
 
 
         String number;

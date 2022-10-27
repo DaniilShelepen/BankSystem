@@ -1,6 +1,8 @@
 package com.daniil.bank.demo.dal.entity.legal;
 
+import com.daniil.bank.demo.dal.entity.Guarantor;
 import com.daniil.bank.demo.dal.entity.Payment;
+import com.daniil.bank.demo.dal.entity.Pledge;
 import com.daniil.bank.demo.dal.entity.role.Manager;
 import com.daniil.bank.demo.enums.CLIENT_STATUS;
 import com.daniil.bank.demo.enums.CREDIT_STATUS;
@@ -43,8 +45,12 @@ public class LegalCredit {
     @Enumerated(EnumType.STRING)
     private CURRENCY currency;//валюта
     private double forfeit;//штраф/
-
+    @ManyToOne
+    private Guarantor guarantor;
     //   private boolean fixedInterestRate;//фиксированная процентная ставка
+
+    @ManyToOne
+    private Pledge pledge;
 
     @ManyToOne
     private EntityUser entityUser;

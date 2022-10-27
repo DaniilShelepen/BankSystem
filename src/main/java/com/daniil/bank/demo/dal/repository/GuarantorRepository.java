@@ -1,6 +1,6 @@
 package com.daniil.bank.demo.dal.repository;
 
-import com.daniil.bank.demo.dal.entity.natural.Guarantor;
+import com.daniil.bank.demo.dal.entity.Guarantor;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import javax.validation.constraints.Size;

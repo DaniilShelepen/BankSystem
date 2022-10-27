@@ -3,7 +3,7 @@ package com.daniil.bank.demo.services.impl;
 import com.daniil.bank.demo.dal.entity.BankAccount;
 import com.daniil.bank.demo.dal.entity.legal.EntityUser;
 import com.daniil.bank.demo.dal.entity.legal.LegalOffer;
-import com.daniil.bank.demo.dal.entity.natural.Guarantor;
+import com.daniil.bank.demo.dal.entity.Guarantor;
 import com.daniil.bank.demo.dal.entity.natural.IndividualUser;
 import com.daniil.bank.demo.dal.entity.natural.NaturalOffer;
 import com.daniil.bank.demo.dal.repository.*;
@@ -23,7 +23,6 @@ import org.iban4j.CountryCode;
 import org.iban4j.Iban;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -103,8 +102,6 @@ public class ManagerServiceImpl implements ManagerService {
                 .passportID(guarantorDto.getPassportID())
                 .address(guarantorDto.getAddress())
                 .phoneNumber(guarantorDto.getPhoneNumber())
-                .estate(guarantorDto.getEstate())
-                .approximateCost(guarantorDto.getApproximateCost())
                 .available(true)
                 .build()));
     }

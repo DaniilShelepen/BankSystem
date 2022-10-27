@@ -1,6 +1,8 @@
 package com.daniil.bank.demo.dal.entity.natural;
 
+import com.daniil.bank.demo.dal.entity.Guarantor;
 import com.daniil.bank.demo.dal.entity.Payment;
+import com.daniil.bank.demo.dal.entity.Pledge;
 import com.daniil.bank.demo.dal.entity.role.Manager;
 import com.daniil.bank.demo.enums.CLIENT_STATUS;
 import com.daniil.bank.demo.enums.CREDIT_STATUS;
@@ -13,7 +15,6 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -46,6 +47,9 @@ public class NaturalCredit {//еще раз проверь что все пол�
     @ManyToOne
     private Guarantor guarantor;
     //   private boolean fixedInterestRate;//фиксированная процентная ставка
+
+    @ManyToOne
+    private Pledge pledge;
 
     @ManyToOne
     private IndividualUser individualUser;

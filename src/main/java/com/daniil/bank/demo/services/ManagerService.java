@@ -1,12 +1,11 @@
 package com.daniil.bank.demo.services;
 
-import com.daniil.bank.demo.dal.entity.natural.Guarantor;
+import com.daniil.bank.demo.dal.entity.Guarantor;
 import com.daniil.bank.demo.dto.*;
 import com.daniil.bank.demo.enums.CARD_TYPE;
 import com.daniil.bank.demo.enums.CURRENCY;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 public interface ManagerService {
