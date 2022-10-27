@@ -26,10 +26,10 @@ public class LegalOffer {
     private Long id;
 
 
-    private BigDecimal sum;
+    private double sum;
     private String description;
     private Long timeMonth;
-    private Integer percentageRate;// процентная ставка
+    private double percentageRate;// процентная ставка
     @Enumerated(EnumType.STRING)
     private CURRENCY currency;
 

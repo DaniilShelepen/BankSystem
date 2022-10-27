@@ -29,7 +29,7 @@ public class IndividualServiceImpl implements IndividualService {
 
     @Transactional
     @Override
-    public void payByIBAN(String iban, BigDecimal sum, String cardNum, Long individualID) {
+    public void payByIBAN(String iban, double sum, String cardNum, Long individualID) {
 
         BankAccount acceptBankAccount = bankAccountRepository.findBankAccountByIBAN(iban);
 
@@ -43,7 +43,7 @@ public class IndividualServiceImpl implements IndividualService {
     }
 
     @Override
-    public void onlinePay(String givingCardNumber, String acceptCardNumber, String CVV, LocalDate validity, BigDecimal sum, Long individualID) {
+    public void onlinePay(String givingCardNumber, String acceptCardNumber, String CVV, LocalDate validity, double sum, Long individualID) {
 
         BankAccount acceptBankAccount = bankCardRepository.findByCardNumber(acceptCardNumber).getBankAccount();
 
@@ -58,13 +58,13 @@ public class IndividualServiceImpl implements IndividualService {
 
 
     @Override
-    public void moneyTransfer(String givingCardNumber, String acceptCardNumber, BigDecimal sum, Long individualID) {
+    public void moneyTransfer(String givingCardNumber, String acceptCardNumber, double sum, Long individualID) {
 
     }
 
     @Transactional
     @Override
-    public void creditPay(String cardNumber, String creditNum, BigDecimal sum, Long individualID) {
+    public void creditPay(String cardNumber, String creditNum, double sum, Long individualID) {
         NaturalCredit credit = Optional.ofNullable(naturalCreditRepository.findByNumber(creditNum))
                 .orElseThrow(RuntimeException::new);//todo
 

@@ -23,11 +23,11 @@ public class Lawsuits {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    LAWSUIT_REASON reason;
+    private LAWSUIT_REASON reason;
 
-    LAWSUIT_STATUS status;
+    private LAWSUIT_STATUS status;
 
-    LAWSUIT_SOLUTION solution;
+    private LAWSUIT_SOLUTION solution;
 
     @ManyToOne
     IndividualUser individualUser;

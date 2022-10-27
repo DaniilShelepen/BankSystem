@@ -35,7 +35,7 @@ public class Operation {
 
 
     private String description;
-    private BigDecimal sum;
+    private double sum;
     private Date date;
     @Enumerated(EnumType.STRING)
     private OPERATION_STATUS operation_status;

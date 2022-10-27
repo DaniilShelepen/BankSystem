@@ -28,6 +28,7 @@ public class OfferServiceImpl implements OfferService {
                 .clientStatus(naturalOfferDto.getClient_status())
                 .percentageRate(naturalOfferDto.getPercentageRate())
                 .available(naturalOfferDto.isAvailable())
+                .timeMonth(naturalOfferDto.getMonths())
                 .build());
 
     }
@@ -41,6 +42,7 @@ public class OfferServiceImpl implements OfferService {
                 .clientStatus(legalOfferDto.getClient_status())
                 .percentageRate(legalOfferDto.getPercentageRate())
                 .available(legalOfferDto.isAvailable())
+                .timeMonth(legalOfferDto.getMonths())
                 .build());
     }
 

@@ -10,10 +10,10 @@ import java.math.BigDecimal;
 @Data
 @SuperBuilder
 public class LegalOfferDto {
-    private BigDecimal sum;
+    private double sum;
     private String description;
-    private String time;
-    private Integer percentageRate;// процентная ставка
+    private Long months;
+    private double percentageRate;// процентная ставка
     private CURRENCY currency;
     private CLIENT_STATUS client_status;
 

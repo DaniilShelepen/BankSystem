@@ -58,7 +58,7 @@ public class ManagerServiceImpl implements ManagerService {
             if ((int) individualUserDB.getBankAccounts().stream()
                     .filter(bankAccount -> bankAccount.getCurrency().equals(currency)).count() == 0) {
                 bankAccountRepository.save(BankAccount.builder()
-                        .balance(BigDecimal.ZERO)
+                        .balance(0.0)
                         .IBAN(getIban())
                         .individualUser(individualUserDB)
                         .currency(currency)
@@ -81,7 +81,7 @@ public class ManagerServiceImpl implements ManagerService {
                 .clientStatus(CLIENT_STATUS.GENERAL)
                 .build());
         bankAccountRepository.save(BankAccount.builder()
-                .balance(BigDecimal.ZERO)
+                .balance(0.0)
                 .IBAN(getIban())
                 .individualUser(newIndividualUser)
                 .currency(currency)
@@ -117,7 +117,7 @@ public class ManagerServiceImpl implements ManagerService {
             if ((int) entityUserDB.getBankAccounts().stream()
                     .filter(bankAccount -> bankAccount.getCurrency().equals(currency)).count() == 0) {
                 bankAccountRepository.save(BankAccount.builder()
-                        .balance(BigDecimal.ZERO)
+                        .balance(0.0)
                         .IBAN(getIban())
                         .entityUser(entityUserDB)
                         .currency(currency)
@@ -138,7 +138,7 @@ public class ManagerServiceImpl implements ManagerService {
                 .build());
 
         bankAccountRepository.save(BankAccount.builder()
-                .balance(BigDecimal.ZERO)
+                .balance(0.0)
                 .IBAN(getIban())
                 .entityUser(newEntityUser)
                 .currency(currency)
@@ -148,21 +148,21 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public List<NaturalOfferDto> getNaturalOffers(CURRENCY currency, BigDecimal sum) {
+    public List<NaturalOfferDto> getNaturalOffers(CURRENCY currency, double sum) {
         return naturalOfferRepository.findByCurrency(currency).stream()
-                .filter(naturalOffer -> sum.compareTo(naturalOffer.getSum()) < 0)
+                .filter(naturalOffer -> sum < naturalOffer.getSum())
                 .map(naturalOfferConvertor::convert).collect(Collectors.toList());
     }
 
     @Override
-    public List<LegalOfferDto> getLegalOffers(CURRENCY currency, BigDecimal sum) {
+    public List<LegalOfferDto> getLegalOffers(CURRENCY currency, double sum) {
         return legalOfferRepository.findByCurrency(currency).stream()
-                .filter(legalOffer -> sum.compareTo(legalOffer.getSum()) < 0)
+                .filter(legalOffer -> sum < legalOffer.getSum())
                 .map(legalOfferConvertor::convertor).collect(Collectors.toList());
     }
 
     @Override
-    public void createNaturalContract(IndividualDto individualDto, Long offerId, GuarantorDto guarantorDto, BigDecimal sum) {
+    public void createNaturalContract(IndividualDto individualDto, Long offerId, GuarantorDto guarantorDto, double sum) {
         NaturalOffer credit = naturalOfferRepository.findById(offerId).orElseThrow(RuntimeException::new);//todo своя ошибка
 
         IndividualDto clientDto = createIndividual(individualDto, credit.getCurrency());
@@ -170,7 +170,7 @@ public class ManagerServiceImpl implements ManagerService {
         IndividualUser client = individualRepository
                 .findByPassportIDAndPassportSeries(clientDto.getPassportID().toUpperCase(), clientDto.getPassportSeries().toUpperCase());
 
-        if (client.getClientStatus().compareTo(credit.getClientStatus()) <= 0)
+        if (client.getClientStatus().compareTo(credit.getClientStatus()) < 0)
             throw new RuntimeException();//todo exception
         Guarantor guarantor = createGuarantor(guarantorDto);
 
@@ -180,7 +180,7 @@ public class ManagerServiceImpl implements ManagerService {
 
 
     @Override
-    public void createLegalContract(EntityDto entityDto, Long offerId, BigDecimal sum) {
+    public void createLegalContract(EntityDto entityDto, Long offerId, double sum) {
 
         LegalOffer credit = legalOfferRepository.findById(offerId).orElseThrow(RuntimeException::new);//todo exception
 

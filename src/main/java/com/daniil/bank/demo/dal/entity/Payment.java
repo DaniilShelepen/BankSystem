@@ -25,8 +25,8 @@ public class Payment {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    BigDecimal sum;
-    LocalDate date;
+    private double sum;
+    private LocalDate date;
 
     @ManyToOne
     EntityUser entityUser;

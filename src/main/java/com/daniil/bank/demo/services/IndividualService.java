@@ -8,16 +8,16 @@ import java.time.LocalDate;
 public interface IndividualService {
 
     @Description("")
-    void payByIBAN(String iban, BigDecimal sum, String cardNum, Long individualID);
+    void payByIBAN(String iban, double sum, String cardNum, Long individualID);
 
     @Description("")
-    void onlinePay(String cardNumber, String acceptCardNumber, String CVV, LocalDate validity, BigDecimal sum, Long individualID);
+    void onlinePay(String cardNumber, String acceptCardNumber, String CVV, LocalDate validity, double sum, Long individualID);
 
     @Description("")
-    void moneyTransfer(String cardNumber, String acceptCardNumber, BigDecimal sum, Long individualID);
+    void moneyTransfer(String cardNumber, String acceptCardNumber, double sum, Long individualID);
 
 
-    void creditPay(String cardNumber, String creditNum, BigDecimal sum, Long individualID);
+    void creditPay(String cardNumber, String creditNum, double sum, Long individualID);
 
 }
 

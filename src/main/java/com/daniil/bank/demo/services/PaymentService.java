@@ -10,8 +10,8 @@ import java.math.BigDecimal;
 public interface PaymentService {
 
 
-    void createIndividualPayment(IndividualUser individualUser, BigDecimal sum, NaturalCredit naturalCredit);
+    void createIndividualPayment(IndividualUser individualUser, double sum, NaturalCredit naturalCredit);
 
-    void createEntityPayment(EntityUser entityUser, BigDecimal sum, LegalCredit legalCredit);
+    void createEntityPayment(EntityUser entityUser, double sum, LegalCredit legalCredit);
 
 }

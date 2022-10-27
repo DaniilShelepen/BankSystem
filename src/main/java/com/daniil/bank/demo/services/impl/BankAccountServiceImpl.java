@@ -27,13 +27,13 @@ public class BankAccountServiceImpl implements BankAccountService {
 
     @Override
     @Transactional
-    public void naturalCredit(BankAccount givingBankAccount, BigDecimal sum, NaturalCredit credit) {
+    public void naturalCredit(BankAccount givingBankAccount, double sum, NaturalCredit credit) {
         BalanceCheck(givingBankAccount, sum);
 
-        givingBankAccount.setBalance(givingBankAccount.getBalance().subtract(sum));
+        givingBankAccount.setBalance(givingBankAccount.getBalance() - sum);
         bankAccountRepository.save(givingBankAccount);
 
-        credit.setSum(credit.getSum().subtract(sum));
+        credit.setSum(credit.getSum() - sum);
         naturalCreditRepository.save(credit);
 
         paymentService.createIndividualPayment(givingBankAccount.getIndividualUser(), sum, credit);
@@ -42,26 +42,26 @@ public class BankAccountServiceImpl implements BankAccountService {
 
     @Override
     @Transactional
-    public void legalCredit(BankAccount givingBankAccount, BigDecimal sum, LegalCredit credit) {
+    public void legalCredit(BankAccount givingBankAccount, double sum, LegalCredit credit) {
 
     }
 
     @Override
     @Transactional
-    public void transaction(BigDecimal sum, BankAccount givingBankAccount, BankAccount acceptBankAccount) {
+    public void transaction(double sum, BankAccount givingBankAccount, BankAccount acceptBankAccount) {
         BalanceCheck(givingBankAccount, sum);
 
-        givingBankAccount.setBalance(givingBankAccount.getBalance().subtract(sum));
+        givingBankAccount.setBalance(givingBankAccount.getBalance() - sum);
         bankAccountRepository.save(givingBankAccount);
 
         if (acceptBankAccount != null) {
-            acceptBankAccount.setBalance(acceptBankAccount.getBalance().add(sum));
+            acceptBankAccount.setBalance(acceptBankAccount.getBalance() + sum);
             bankAccountRepository.save(acceptBankAccount);
         }
     }
 
-    private static void BalanceCheck(BankAccount givingBankAccount, BigDecimal sum) {
-        if (givingBankAccount.getBalance().compareTo(sum) < 0)
+    private static void BalanceCheck(BankAccount givingBankAccount, double sum) {
+        if (givingBankAccount.getBalance() < sum)
             throw new RuntimeException();//todo
     }
 

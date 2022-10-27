@@ -1,6 +1,7 @@
 package com.daniil.bank.demo.dal.entity.natural;
 
 import com.daniil.bank.demo.dal.entity.role.Manager;
+import com.daniil.bank.demo.enums.CURRENCY;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import lombok.experimental.SuperBuilder;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
+import java.util.Currency;
 import java.util.List;
 
 @Entity
@@ -39,7 +41,8 @@ public class Guarantor {
     private String phoneNumber;
 
     private String estate;// имущество под залог
-    private BigDecimal approximateCost; //примерная цена залога
+    private double approximateCost; //примерная цена залога
+    private CURRENCY currency;
     private boolean available;
 
     @OneToMany(mappedBy = "guarantor", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)

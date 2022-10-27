@@ -28,7 +28,7 @@ public class BankAccount {
     private Long id;
 
     private String IBAN;
-    private BigDecimal balance;
+    private double balance;
     @Enumerated(EnumType.STRING)
     private CURRENCY currency;
     @Enumerated(EnumType.STRING)

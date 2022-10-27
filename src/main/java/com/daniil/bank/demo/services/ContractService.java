@@ -11,9 +11,9 @@ import java.math.BigDecimal;
 
 public interface ContractService {
     @Transactional
-    void individualContract(IndividualUser individualUser, NaturalOffer credit, Guarantor guarantor, BigDecimal sum);
+    void individualContract(IndividualUser individualUser, NaturalOffer credit, Guarantor guarantor, double sum);
 
     @Transactional
-    void legalContract(EntityUser entityUser, LegalOffer credit, BigDecimal sum);
+    void legalContract(EntityUser entityUser, LegalOffer credit, double sum);
 
 }

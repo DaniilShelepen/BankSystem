@@ -33,7 +33,7 @@ public class ContractServiceImpl implements ContractService {
 
 
     @Override
-    public void individualContract(IndividualUser client, NaturalOffer credit, Guarantor guarantor, BigDecimal sum) {
+    public void individualContract(IndividualUser client, NaturalOffer credit, Guarantor guarantor, double sum) {
 
 
         String number;
@@ -41,19 +41,22 @@ public class ContractServiceImpl implements ContractService {
             number = getRandomNumber();
         } while (naturalCreditRepository.findByNumber(number) != null);
 
+        double percentageRate;
 
         switch (client.getClientStatus()) {
-
             case BENEFIT -> {
+
+                percentageRate = credit.getPercentageRate() - (credit.getPercentageRate() * 0.15);
+
                 naturalCreditRepository.save(NaturalCredit.builder()
-                        .sum(sum)
-                        .monthlyPayment(sum.divide(BigDecimal.valueOf(credit.getTimeMonth())))
+                        .sum(calculationCredit(sum, credit.getTimeMonth(), percentageRate))
+                        .monthlyPayment(calculationCredit(sum, credit.getTimeMonth(), percentageRate) / credit.getTimeMonth())
                         .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))//todo тут посмотри как поставить последний день получившегося месяца
                         .status(CREDIT_STATUS.PROCESSING)
                         .clientStatus(client.getClientStatus())
-                        .percentageRate((int) Math.round(credit.getPercentageRate() - (credit.getPercentageRate() * 0.1)))
+                        .percentageRate(percentageRate)
                         .currency(credit.getCurrency())
-                        .forfeit(BigDecimal.ZERO)
+                        .forfeit(0.0)
                         .number(number)
                         .guarantor(null)
                         .individualUser(client)
@@ -65,15 +68,16 @@ public class ContractServiceImpl implements ContractService {
                 if (!guarantor.isAvailable())
                     throw new RuntimeException();//todo exeption, подумай как еще от ифов избавиться
 
+                percentageRate = credit.getPercentageRate() - (credit.getPercentageRate() * 0.3);
                 naturalCreditRepository.save(NaturalCredit.builder()
-                        .sum(sum)
-                        .monthlyPayment(sum.divide(BigDecimal.valueOf(credit.getTimeMonth())))
+                        .sum(calculationCredit(sum, credit.getTimeMonth(), percentageRate))
+                        .monthlyPayment(calculationCredit(sum, credit.getTimeMonth(), percentageRate) / credit.getTimeMonth())
                         .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))//todo тут посмотри как поставиьт последний день получившегося месяца
                         .status(CREDIT_STATUS.PROCESSING)
                         .clientStatus(client.getClientStatus())
-                        .percentageRate((int) Math.round(credit.getPercentageRate() - (credit.getPercentageRate() * 0.3)))
+                        .percentageRate(percentageRate)
                         .currency(credit.getCurrency())
-                        .forfeit(BigDecimal.ZERO)
+                        .forfeit(0.0)
                         .number(number)
                         .guarantor(guarantor)
                         .individualUser(client)
@@ -84,15 +88,16 @@ public class ContractServiceImpl implements ContractService {
             }
 
             case VIP -> {
+                percentageRate = credit.getPercentageRate() - (credit.getPercentageRate() * 0.5);
                 naturalCreditRepository.save(NaturalCredit.builder()
-                        .sum(sum)
-                        .monthlyPayment(sum.divide(BigDecimal.valueOf(credit.getTimeMonth())))
+                        .sum(calculationCredit(sum, credit.getTimeMonth(), percentageRate))
+                        .monthlyPayment(calculationCredit(sum, credit.getTimeMonth(), percentageRate) / credit.getTimeMonth())
                         .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))//todo тут посмотри как поставить последний день получившегося месяца
                         .status(CREDIT_STATUS.PROCESSING)
                         .clientStatus(client.getClientStatus())
-                        .percentageRate((int) Math.round(credit.getPercentageRate() - (credit.getPercentageRate() * 0.4)))
+                        .percentageRate(percentageRate)
                         .currency(credit.getCurrency())
-                        .forfeit(BigDecimal.ZERO)
+                        .forfeit(0.0)
                         .number(number)
                         .guarantor(null)
                         .individualUser(client)
@@ -104,14 +109,14 @@ public class ContractServiceImpl implements ContractService {
                     throw new RuntimeException();//todo exeption, подумай как еще от ифов избавиться
 
                 naturalCreditRepository.save(NaturalCredit.builder()
-                        .sum(sum)
-                        .monthlyPayment(sum.divide(BigDecimal.valueOf(credit.getTimeMonth())))
+                        .sum(calculationCredit(sum, credit.getTimeMonth(), credit.getPercentageRate()))
+                        .monthlyPayment(calculationCredit(sum, credit.getTimeMonth(), credit.getPercentageRate()) / credit.getTimeMonth())
                         .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))//todo тут посмотри как поставиьт последний день получившегося месяца
                         .status(CREDIT_STATUS.PROCESSING)
                         .clientStatus(client.getClientStatus())
                         .percentageRate(credit.getPercentageRate())
                         .currency(credit.getCurrency())
-                        .forfeit(BigDecimal.ZERO)
+                        .forfeit(0.0)
                         .number(number)
                         .guarantor(guarantor)
                         .individualUser(client)
@@ -127,45 +132,49 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public void legalContract(EntityUser client, LegalOffer credit, BigDecimal sum) {
+    public void legalContract(EntityUser client, LegalOffer credit, double sum) {
+
+        if (client.getClientStatus().compareTo(credit.getClientStatus()) <= 0)
+            throw new RuntimeException();//todo exeption
 
         String number;
         do {
             number = getRandomNumber();
         } while (naturalCreditRepository.findByNumber(number) != null);
 
-        if (client.getClientStatus().compareTo(credit.getClientStatus()) <= 0)
-            throw new RuntimeException();//todo exeption
+        double percentageRate;
 
         switch (client.getClientStatus()) {
 
             case REGULAR -> {
+                percentageRate = credit.getPercentageRate() - (credit.getPercentageRate() * 0.25);
                 legalCreditRepository.save(LegalCredit.builder()
                         .entityUser(client)
                         .number(number)
-                        .forfeit(BigDecimal.ZERO)
+                        .forfeit(0.0)
                         .status(CREDIT_STATUS.PROCESSING)
                         .clientStatus(client.getClientStatus())
-                        .percentageRate((int) Math.round(credit.getPercentageRate() - (credit.getPercentageRate() * 0.25)))
+                        .percentageRate(percentageRate)
                         .currency(credit.getCurrency())
-                        .sum(sum)
-                        .monthlyPayment(sum.divide(BigDecimal.valueOf(credit.getTimeMonth())))
+                        .sum(calculationCredit(sum, credit.getTimeMonth(), percentageRate))
+                        .monthlyPayment(calculationCredit(sum, credit.getTimeMonth(), percentageRate) / credit.getTimeMonth())
                         .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))
                         .build());
             }
 
 
             case VIP -> {
+                percentageRate = credit.getPercentageRate() - (credit.getPercentageRate() * 0.6);
                 legalCreditRepository.save(LegalCredit.builder()
                         .entityUser(client)
                         .number(number)
-                        .forfeit(BigDecimal.ZERO)
+                        .forfeit(0.0)
                         .status(CREDIT_STATUS.PROCESSING)
                         .clientStatus(client.getClientStatus())
-                        .percentageRate((int) Math.round(credit.getPercentageRate() - (credit.getPercentageRate() * 0.4)))
+                        .percentageRate(percentageRate)
                         .currency(credit.getCurrency())
-                        .sum(sum)
-                        .monthlyPayment(sum.divide(BigDecimal.valueOf(credit.getTimeMonth())))
+                        .sum(calculationCredit(sum, credit.getTimeMonth(), percentageRate))
+                        .monthlyPayment(calculationCredit(sum, credit.getTimeMonth(), percentageRate) / credit.getTimeMonth())
                         .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))
                         .build());
 
@@ -176,13 +185,13 @@ public class ContractServiceImpl implements ContractService {
                 legalCreditRepository.save(LegalCredit.builder()
                         .entityUser(client)
                         .number(number)
-                        .forfeit(BigDecimal.ZERO)
+                        .forfeit(0.0)
                         .status(CREDIT_STATUS.PROCESSING)
                         .clientStatus(client.getClientStatus())
                         .percentageRate(credit.getPercentageRate())
                         .currency(credit.getCurrency())
-                        .sum(sum)
-                        .monthlyPayment(sum.divide(BigDecimal.valueOf(credit.getTimeMonth())))
+                        .sum(calculationCredit(sum, credit.getTimeMonth(), credit.getPercentageRate()))
+                        .monthlyPayment(calculationCredit(sum, credit.getTimeMonth(), credit.getPercentageRate()) / credit.getTimeMonth())
                         .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))
                         .build());
             }
@@ -191,7 +200,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
 
-    private String getRandomNumber() {
+    private static String getRandomNumber() {
 
         Random random = new Random();
         StringBuilder sb = new StringBuilder();
@@ -202,5 +211,10 @@ public class ContractServiceImpl implements ContractService {
         return sb.toString();
     }
 
+    private static double calculationCredit(double sum, Long months, double percentageRate) {
+        double monthlyRate = percentageRate / 12 / 100;
+        sum = sum * (monthlyRate) * (Math.pow(monthlyRate + 1, months) / (Math.pow(monthlyRate + 1, months) - 1));
+        return sum * months;
+    }
 
 }

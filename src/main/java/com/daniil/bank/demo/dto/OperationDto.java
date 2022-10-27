@@ -15,7 +15,7 @@ public class OperationDto {
 
     private String fullName;
     private String description;
-    private BigDecimal sum;
+    private double sum;
     private Date date;
     private OPERATION_STATUS operation_status;
 

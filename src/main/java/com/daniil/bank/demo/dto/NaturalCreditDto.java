@@ -19,7 +19,7 @@ public class NaturalCreditDto {
     private CLIENT_STATUS clientStatus;
     private BigDecimal sum;
     private LocalDate loanTerm;
-    private Integer percentageRate;
+    private Double percentageRate;
     private CURRENCY currency;
     private BigDecimal forfeit;
 

@@ -4,12 +4,17 @@ import com.daniil.bank.demo.dal.entity.BankAccount;
 import com.daniil.bank.demo.dal.entity.natural.IndividualUser;
 import com.daniil.bank.demo.dal.entity.natural.NaturalCredit;
 import com.daniil.bank.demo.dal.repository.BankAccountRepository;
+import com.daniil.bank.demo.dal.repository.GuarantorRepository;
 import com.daniil.bank.demo.dal.repository.IndividualRepository;
 import com.daniil.bank.demo.dal.repository.NaturalCreditRepository;
+import com.daniil.bank.demo.dto.GuarantorDto;
 import com.daniil.bank.demo.dto.IndividualDto;
+import com.daniil.bank.demo.dto.NaturalCreditDto;
+import com.daniil.bank.demo.dto.NaturalOfferDto;
 import com.daniil.bank.demo.enums.*;
 import com.daniil.bank.demo.services.IndividualService;
 import com.daniil.bank.demo.services.ManagerService;
+import com.daniil.bank.demo.services.OfferService;
 import com.daniil.bank.demo.services.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.MethodOrderer;
@@ -18,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -44,6 +50,12 @@ class BankApplicationTests {
 
     @Autowired
     IndividualRepository individualRepository;
+
+    @Autowired
+    OfferService offerService;
+
+    @Autowired
+    GuarantorRepository guarantorRepository;
 
 
     @Test
@@ -91,44 +103,70 @@ class BankApplicationTests {
     @Order(4)
     void NaturalCreditExecute() {
 
-
-        naturalCreditRepository.save(NaturalCredit.builder()
-                .sum(BigDecimal.valueOf(15000))
-                .loanTerm(LocalDate.now().plusMonths(12))//todo тут посмотри как поставить последний день получившегося месяца
-                .status(CREDIT_STATUS.REGISTERED)
-                .clientStatus(CLIENT_STATUS.GENERAL)
-                .percentageRate(15)
+        offerService.createNaturalOffer(NaturalOfferDto.builder()
+                .percentageRate(15.0)
+                .description("bla bla bla")
+                .client_status(CLIENT_STATUS.GENERAL)
+                .available(true)
                 .currency(CURRENCY.BYN)
-                .forfeit(BigDecimal.ZERO)
-                .number("12300942544190BYN")
-                .guarantor(null)
-                .individualUser(individualRepository.findByPhoneNumber("+375445873642"))
-                .build());
+                .sum(25_000.0)
+                .months(36L)
+                .build()
+        );
 
+
+        managerService.createNaturalContract(IndividualDto.builder()
+                        .name("DANIIL")
+                        .surname("SHELEPEN")
+                        .thirdName("ME")
+                        .passportSeries("BM")
+                        .passportID("2274003")
+                        .address("MY_ADRESS")
+                        .phoneNumber("+375445873642")
+                        .build(), 1L,
+                GuarantorDto.builder()
+                        .name("Vladochka")
+                        .passportID("2579632")
+                        .passportSeries("BM")
+                        .estate("много много деняк")
+                        .approximateCost(5545645512.0)
+                        .currency(CURRENCY.BYN)
+                        .address("Novopolotsk")
+                        .build(),
+                19_500.0);
 
     }
 
     //4255059625417942
-    @Test
-    @Order(5)
-    void testPay() {
-        BankAccount bankAccount = bankAccountRepository.findBankAccountByIBAN("BY6517075444HLWS5OUYSL6Y7XFX");
-        bankAccount.setBalance(BigDecimal.valueOf(99999999));
-        bankAccountRepository.save(bankAccount);
-
-        IndividualUser individualUser = individualRepository.findByPhoneNumber("+375445873642");
-        individualService.creditPay("4255059625417942", "12300942544190BYN", BigDecimal.valueOf(400), individualUser.getId());
-    }
-//
-//
 //    @Test
-//    void calculatingMonthPayment() {
-//        BigDecimal sum = BigDecimal.valueOf(15783);
+//    @Order(5)
+//    void testPay() {
+//        BankAccount bankAccount = bankAccountRepository.findBankAccountByIBAN("BY6517075444HLWS5OUYSL6Y7XFX");
+//        bankAccount.setBalance(BigDecimal.valueOf(99999999));
+//        bankAccountRepository.save(bankAccount);
 //
-//        BigDecimal a = sum.divide(BigDecimal.valueOf(10L));
-//
-//        log.info(a.toString());
-//
+//        IndividualUser individualUser = individualRepository.findByPhoneNumber("+375445873642");
+//        individualService.creditPay("4255059625417942", "12300942544190BYN", BigDecimal.valueOf(400), individualUser.getId());
 //    }
+
+
+    @Test
+    void calculatingCreditSum() {
+
+        double sum = 1500.0;
+
+        long month = 24L;
+
+        double percentageRate = 8.0;
+
+        double monthlyPayment = percentageRate / 12 / 100;
+
+
+        sum = sum * (monthlyPayment) * (Math.pow(monthlyPayment + 1, month) / (Math.pow(monthlyPayment + 1, month) - 1));
+
+        log.info(String.valueOf(sum));
+
+    }
+
 
 }

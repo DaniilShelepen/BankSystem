@@ -11,12 +11,12 @@ public interface BankAccountService {
 
     //отдать
     @Transactional
-    void naturalCredit(BankAccount givingBankAccount, BigDecimal sum, NaturalCredit credit);
+    void naturalCredit(BankAccount givingBankAccount, double sum, NaturalCredit credit);
 
     @Transactional
-    void legalCredit(BankAccount givingBankAccount, BigDecimal sum, LegalCredit credit);
+    void legalCredit(BankAccount givingBankAccount, double sum, LegalCredit credit);
 
 
     @Transactional
-    void transaction(BigDecimal sum, BankAccount givingBankAccount, BankAccount acceptBankAccount);
+    void transaction(double sum, BankAccount givingBankAccount, BankAccount acceptBankAccount);
 }

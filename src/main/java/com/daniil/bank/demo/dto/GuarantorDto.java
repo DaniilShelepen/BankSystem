@@ -1,5 +1,6 @@
 package com.daniil.bank.demo.dto;
 
+import com.daniil.bank.demo.enums.CURRENCY;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
 
@@ -15,6 +16,7 @@ public class GuarantorDto {
     private String passportID;
     private String address;
     private String phoneNumber;
+    private CURRENCY currency;
     private String estate;// имущество под залог
-    private BigDecimal approximateCost; //примерная цена залога
+    private double approximateCost; //примерная цена залога
 }

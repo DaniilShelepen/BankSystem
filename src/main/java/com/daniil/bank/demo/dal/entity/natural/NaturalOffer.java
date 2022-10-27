@@ -25,10 +25,10 @@ public class NaturalOffer {
     private Long id;
 
 
-    private BigDecimal sum;
+    private double sum;
     private String description;
     private Long timeMonth;
-    private Integer percentageRate;// процентная ставка
+    private Double percentageRate;// процентная ставка
     @Enumerated(EnumType.STRING)
     private CURRENCY currency;
 

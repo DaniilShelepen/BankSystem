@@ -18,13 +18,13 @@ public interface ManagerService {
     @Transactional
     EntityDto createEntity(EntityDto entityDto, CURRENCY currency);
 
-    List<NaturalOfferDto> getNaturalOffers(CURRENCY currency, BigDecimal sum);
+    List<NaturalOfferDto> getNaturalOffers(CURRENCY currency, double sum);
 
-    List<LegalOfferDto> getLegalOffers(CURRENCY currency, BigDecimal sum);
+    List<LegalOfferDto> getLegalOffers(CURRENCY currency, double sum);
 
-    void createNaturalContract(IndividualDto individualDto, Long offerId, GuarantorDto guarantorDto, BigDecimal sum);
+    void createNaturalContract(IndividualDto individualDto, Long offerId, GuarantorDto guarantorDto, double sum);
 
-    void createLegalContract(EntityDto entityDto, Long offerId, BigDecimal sum);
+    void createLegalContract(EntityDto entityDto, Long offerId, double sum);
 
     @Transactional
     void createIndividualCard(IndividualDto individualDto, CARD_TYPE cardType, Integer bankAccNum);

@@ -35,14 +35,14 @@ public class NaturalCredit {//еще раз проверь что все пол�
     private String number;
     @Enumerated(EnumType.STRING)
     private CLIENT_STATUS clientStatus;
-    private BigDecimal sum;
-    private BigDecimal monthlyPayment;
+    private double sum;
+    private double monthlyPayment;
     @DateTimeFormat(pattern = "dd.MM.yyyy")
     private LocalDate loanTerm;//срок до какого должен быть выплачен кредит
-    private Integer percentageRate;// процентная ставка
+    private double percentageRate;// процентная ставка
     @Enumerated(EnumType.STRING)
     private CURRENCY currency;//валюта
-    private BigDecimal forfeit;//штраф
+    private double forfeit;//штраф
     @ManyToOne
     private Guarantor guarantor;
     //   private boolean fixedInterestRate;//фиксированная процентная ставка

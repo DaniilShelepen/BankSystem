@@ -20,7 +20,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository paymentRepository;
 
     @Override
-    public void createIndividualPayment(IndividualUser individualUser, BigDecimal sum, NaturalCredit naturalCredit) {
+    public void createIndividualPayment(IndividualUser individualUser, double sum, NaturalCredit naturalCredit) {
 
         paymentRepository.save(Payment.builder()
                 .individualUser(individualUser)
@@ -33,7 +33,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public void createEntityPayment(EntityUser entityUser, BigDecimal sum, LegalCredit legalCredit) {
+    public void createEntityPayment(EntityUser entityUser, double sum, LegalCredit legalCredit) {
 
         paymentRepository.save(Payment.builder()
                 .entityUser(entityUser)
