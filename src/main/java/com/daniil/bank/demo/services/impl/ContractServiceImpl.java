@@ -52,7 +52,7 @@ public class ContractServiceImpl implements ContractService {
                         .monthlyPayment(calculationCredit(sum, credit.getTimeMonth(), percentageRate) / credit.getTimeMonth())
                         .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))//todo тут посмотри как поставить последний день получившегося месяца
                         .status(CREDIT_STATUS.PROCESSING)
-                        .clientStatus(client.getClientStatus())
+
                         .percentageRate(percentageRate)
                         .currency(credit.getCurrency())
                         .forfeit(0.0)
@@ -73,7 +73,7 @@ public class ContractServiceImpl implements ContractService {
                         .monthlyPayment(calculationCredit(sum, credit.getTimeMonth(), percentageRate) / credit.getTimeMonth())
                         .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))//todo тут посмотри как поставиьт последний день получившегося месяца
                         .status(CREDIT_STATUS.PROCESSING)
-                        .clientStatus(client.getClientStatus())
+
                         .percentageRate(percentageRate)
                         .currency(credit.getCurrency())
                         .forfeit(0.0)
@@ -93,7 +93,7 @@ public class ContractServiceImpl implements ContractService {
                         .monthlyPayment(calculationCredit(sum, credit.getTimeMonth(), percentageRate) / credit.getTimeMonth())
                         .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))//todo тут посмотри как поставить последний день получившегося месяца
                         .status(CREDIT_STATUS.PROCESSING)
-                        .clientStatus(client.getClientStatus())
+
                         .percentageRate(percentageRate)
                         .currency(credit.getCurrency())
                         .forfeit(0.0)
@@ -112,7 +112,7 @@ public class ContractServiceImpl implements ContractService {
                         .monthlyPayment(calculationCredit(sum, credit.getTimeMonth(), credit.getPercentageRate()) / credit.getTimeMonth())
                         .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))//todo тут посмотри как поставиьт последний день получившегося месяца
                         .status(CREDIT_STATUS.PROCESSING)
-                        .clientStatus(client.getClientStatus())
+
                         .percentageRate(credit.getPercentageRate())
                         .currency(credit.getCurrency())
                         .forfeit(0.0)
@@ -152,7 +152,7 @@ public class ContractServiceImpl implements ContractService {
                         .number(number)
                         .forfeit(0.0)
                         .status(CREDIT_STATUS.PROCESSING)
-                        .clientStatus(client.getClientStatus())
+
                         .percentageRate(percentageRate)
                         .currency(credit.getCurrency())
                         .sum(calculationCredit(sum, credit.getTimeMonth(), percentageRate))
@@ -169,7 +169,7 @@ public class ContractServiceImpl implements ContractService {
                         .number(number)
                         .forfeit(0.0)
                         .status(CREDIT_STATUS.PROCESSING)
-                        .clientStatus(client.getClientStatus())
+
                         .percentageRate(percentageRate)
                         .currency(credit.getCurrency())
                         .sum(calculationCredit(sum, credit.getTimeMonth(), percentageRate))
@@ -186,7 +186,6 @@ public class ContractServiceImpl implements ContractService {
                         .number(number)
                         .forfeit(0.0)
                         .status(CREDIT_STATUS.PROCESSING)
-                        .clientStatus(client.getClientStatus())
                         .percentageRate(credit.getPercentageRate())
                         .currency(credit.getCurrency())
                         .sum(calculationCredit(sum, credit.getTimeMonth(), credit.getPercentageRate()))

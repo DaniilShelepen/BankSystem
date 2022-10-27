@@ -34,8 +34,6 @@ public class LegalCredit {
     @Enumerated(EnumType.STRING)
     private CREDIT_STATUS status;
     private String number;
-    @Enumerated(EnumType.STRING)
-    private CLIENT_STATUS clientStatus;
     private double sum;
     private double monthlyPayment;
 
@@ -45,8 +43,6 @@ public class LegalCredit {
     @Enumerated(EnumType.STRING)
     private CURRENCY currency;//валюта
     private double forfeit;//штраф/
-    @ManyToOne
-    private Guarantor guarantor;
     //   private boolean fixedInterestRate;//фиксированная процентная ставка
 
     @ManyToOne

@@ -34,8 +34,6 @@ public class NaturalCredit {//еще раз проверь что все пол�
     @Enumerated(EnumType.STRING)
     private CREDIT_STATUS status;
     private String number;
-    @Enumerated(EnumType.STRING)
-    private CLIENT_STATUS clientStatus;
     private double sum;
     private double monthlyPayment;
     @DateTimeFormat(pattern = "dd.MM.yyyy")

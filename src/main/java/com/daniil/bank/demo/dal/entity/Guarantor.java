@@ -45,11 +45,8 @@ public class Guarantor {
     private boolean available;
 
     @OneToMany(mappedBy = "guarantor", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
-    private List<NaturalCredit> naturalCredits;
+    private List<NaturalCredit> creditList;
 
-
-    @OneToMany(mappedBy = "guarantor", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
-    private List<LegalCredit> legalCredits;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "last_modified_by")
