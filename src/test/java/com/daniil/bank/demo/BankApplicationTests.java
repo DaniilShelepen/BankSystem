@@ -1,17 +1,16 @@
 package com.daniil.bank.demo;
 
-import com.daniil.bank.demo.dal.entity.BankAccount;
-import com.daniil.bank.demo.dal.entity.natural.IndividualUser;
-import com.daniil.bank.demo.dal.entity.natural.NaturalCredit;
 import com.daniil.bank.demo.dal.repository.BankAccountRepository;
 import com.daniil.bank.demo.dal.repository.GuarantorRepository;
 import com.daniil.bank.demo.dal.repository.IndividualRepository;
 import com.daniil.bank.demo.dal.repository.NaturalCreditRepository;
 import com.daniil.bank.demo.dto.GuarantorDto;
 import com.daniil.bank.demo.dto.IndividualDto;
-import com.daniil.bank.demo.dto.NaturalCreditDto;
 import com.daniil.bank.demo.dto.NaturalOfferDto;
-import com.daniil.bank.demo.enums.*;
+import com.daniil.bank.demo.enums.CARD_TYPE;
+import com.daniil.bank.demo.enums.CLIENT_STATUS;
+import com.daniil.bank.demo.enums.CURRENCY;
+import com.daniil.bank.demo.enums.ROLE;
 import com.daniil.bank.demo.services.IndividualService;
 import com.daniil.bank.demo.services.ManagerService;
 import com.daniil.bank.demo.services.OfferService;
@@ -23,10 +22,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
 
 @SpringBootTest
 @Slf4j
@@ -166,6 +161,11 @@ class BankApplicationTests {
 
         log.info(String.valueOf(sum));
 
+    }
+
+    @Test
+    void queryTest() {
+        log.info(String.valueOf(individualRepository.getIndividualsAndCards().get(0).getCardNumber()));
     }
 
 
