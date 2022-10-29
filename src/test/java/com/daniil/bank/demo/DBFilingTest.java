@@ -54,8 +54,8 @@ public class DBFilingTest {
                 .build();
 
         IndividualDto nikitaIndividual = IndividualDto.builder()
-                .name("никита")
-                .surname("якушенко")
+                .name("никита якушенко")
+                .surname("yakushenko")
                 .thirdName("петрович")
                 .passportSeries("BM")
                 .passportID("5438916")

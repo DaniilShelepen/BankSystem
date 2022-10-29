@@ -7,6 +7,7 @@ import com.daniil.bank.demo.dal.repository.BankCardRepository;
 import com.daniil.bank.demo.enums.CARD_TYPE;
 import com.daniil.bank.demo.security.PasswordEncoderConfig;
 import com.daniil.bank.demo.services.CardService;
+import com.ibm.icu.text.Transliterator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -38,7 +39,8 @@ public class CardServiceImpl implements CardService {
                 bankCardRepository.save(BankCard.builder()
                         .individualUser(individualUser)
                         .CVV(passwordEncoderConfig.passwordEncoder().encode(CVV))
-                        .cardName(individualUser.getName().toUpperCase() + " " + individualUser.getSurname().toUpperCase())
+                        .cardName(translateToEnglish(individualUser.getName().toUpperCase(),
+                                individualUser.getSurname().toUpperCase()))
                         .cardNumber(generateCardNum(CARD_TYPE.VISA))//todo можешь посидеть поискать как правильно генерировать
                         .cardType(cardType)
                         .password(passwordEncoderConfig.passwordEncoder().encode(password))
@@ -53,7 +55,8 @@ public class CardServiceImpl implements CardService {
                 bankCardRepository.save(BankCard.builder()
                         .individualUser(individualUser)
                         .CVV(passwordEncoderConfig.passwordEncoder().encode(CVV))
-                        .cardName(individualUser.getName().toUpperCase() + " " + individualUser.getSurname().toUpperCase())
+                        .cardName(translateToEnglish(individualUser.getName().toUpperCase(),
+                                individualUser.getSurname().toUpperCase()))
                         .cardNumber(generateCardNum(CARD_TYPE.MAESTRO))
                         .cardType(cardType)
                         .password(passwordEncoderConfig.passwordEncoder().encode(password))
@@ -68,7 +71,8 @@ public class CardServiceImpl implements CardService {
                 bankCardRepository.save(BankCard.builder()
                         .individualUser(individualUser)
                         .CVV(passwordEncoderConfig.passwordEncoder().encode(CVV))
-                        .cardName(individualUser.getName().toUpperCase() + " " + individualUser.getSurname().toUpperCase())
+                        .cardName(translateToEnglish(individualUser.getName().toUpperCase(),
+                                individualUser.getSurname().toUpperCase()))
                         .cardNumber(generateCardNum(CARD_TYPE.MASTERCARD))
                         .cardType(cardType)
                         .password(passwordEncoderConfig.passwordEncoder().encode(password))
@@ -99,7 +103,8 @@ public class CardServiceImpl implements CardService {
                         .entityUser(entityUser)
                         .individualUser(individualUser)
                         .CVV(passwordEncoderConfig.passwordEncoder().encode(CVV))
-                        .cardName(individualUser.getName().toUpperCase() + " " + individualUser.getSurname().toUpperCase())
+                        .cardName(translateToEnglish(individualUser.getName().toUpperCase(),
+                                individualUser.getSurname().toUpperCase()))
                         .cardNumber(generateCardNum(CARD_TYPE.VISA))//todo можешь посидеть поискать как правильно генерировать
                         .cardType(cardType)
                         .password(passwordEncoderConfig.passwordEncoder().encode(password))
@@ -115,7 +120,8 @@ public class CardServiceImpl implements CardService {
                         .entityUser(entityUser)
                         .individualUser(individualUser)
                         .CVV(passwordEncoderConfig.passwordEncoder().encode(CVV))
-                        .cardName(individualUser.getName().toUpperCase() + " " + individualUser.getSurname().toUpperCase())
+                        .cardName(translateToEnglish(individualUser.getName().toUpperCase(),
+                                individualUser.getSurname().toUpperCase()))
                         .cardNumber(generateCardNum(CARD_TYPE.MAESTRO))
                         .cardType(cardType)
                         .password(passwordEncoderConfig.passwordEncoder().encode(password))
@@ -131,7 +137,8 @@ public class CardServiceImpl implements CardService {
                         .entityUser(entityUser)
                         .individualUser(individualUser)
                         .CVV(passwordEncoderConfig.passwordEncoder().encode(CVV))
-                        .cardName(individualUser.getName().toUpperCase() + " " + individualUser.getSurname().toUpperCase())
+                        .cardName(translateToEnglish(individualUser.getName().toUpperCase(),
+                                individualUser.getSurname().toUpperCase()))
                         .cardNumber(generateCardNum(CARD_TYPE.MASTERCARD))
                         .cardType(cardType)
                         .password(passwordEncoderConfig.passwordEncoder().encode(password))
@@ -188,6 +195,10 @@ public class CardServiceImpl implements CardService {
             }
             default -> throw new RuntimeException();//todo
         }
+    }
+
+    private String translateToEnglish(String firstName, String lastName) {
+        return Transliterator.getInstance("Russian-Latin/BGN").transliterate(firstName + " " + lastName);
     }
 
 }
