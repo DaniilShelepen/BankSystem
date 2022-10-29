@@ -9,6 +9,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -16,12 +17,14 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class Lawsuits {
+public class Lawsuit {
     @Setter(AccessLevel.NONE)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
+
+    private String number;
 
     private LAWSUIT_REASON reason;
 
@@ -29,6 +32,11 @@ public class Lawsuits {
 
     private LAWSUIT_SOLUTION solution;
 
+    private LocalDate startTime;
+
+    private LocalDate endTime;
+
+    private double cost;
     @ManyToOne
     IndividualUser individualUser;
 

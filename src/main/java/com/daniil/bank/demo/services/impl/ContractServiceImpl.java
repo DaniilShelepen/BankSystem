@@ -82,8 +82,8 @@ public class ContractServiceImpl implements ContractService {
                         .individualUser(client)
                         .build());
 
-                guarantor.setAvailable(false);
-                guarantorRepository.save(guarantor);//todo попробуй эту строчку потом убери, типо оно и так обновится должно
+//                guarantor.setAvailable(false);
+//                guarantorRepository.save(guarantor);//todo попробуй эту строчку потом убери, типо оно и так обновится должно
             }
 
             case VIP -> {
@@ -121,8 +121,8 @@ public class ContractServiceImpl implements ContractService {
                         .individualUser(client)
                         .build());
 
-                guarantor.setAvailable(false);
-                guarantorRepository.save(guarantor);//todo попробуй эту строчку потом убери, типо оно и так обновится должно
+//                guarantor.setAvailable(false);
+//                guarantorRepository.save(guarantor);//todo попробуй эту строчку потом убери, типо оно и так обновится должно
             }
 
         }
@@ -133,7 +133,7 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public void legalContract(EntityUser client, LegalOffer credit, double sum) {
 
-        if (client.getClientStatus().compareTo(credit.getClientStatus()) <= 0)
+        if (client.getClientStatus().compareTo(credit.getClientStatus()) < 0)
             throw new RuntimeException();//todo exeption
 
         String number;
@@ -152,7 +152,6 @@ public class ContractServiceImpl implements ContractService {
                         .number(number)
                         .forfeit(0.0)
                         .status(CREDIT_STATUS.PROCESSING)
-
                         .percentageRate(percentageRate)
                         .currency(credit.getCurrency())
                         .sum(calculationCredit(sum, credit.getTimeMonth(), percentageRate))

@@ -2,7 +2,7 @@ package com.daniil.bank.demo.dal.entity.natural;
 
 import com.daniil.bank.demo.dal.entity.BankAccount;
 import com.daniil.bank.demo.dal.entity.BankCard;
-import com.daniil.bank.demo.dal.entity.Lawsuits;
+import com.daniil.bank.demo.dal.entity.Lawsuit;
 import com.daniil.bank.demo.dal.entity.Payment;
 import com.daniil.bank.demo.dal.entity.role.Manager;
 import com.daniil.bank.demo.dal.entity.role.User;
@@ -67,7 +67,7 @@ public class IndividualUser {
     User user;
 
     @OneToMany(mappedBy = "individualUser")
-    List<Lawsuits> lawsuits;
+    List<Lawsuit> lawsuits;
 
     @OneToMany(mappedBy = "individualUser")
     List<Payment> payments;

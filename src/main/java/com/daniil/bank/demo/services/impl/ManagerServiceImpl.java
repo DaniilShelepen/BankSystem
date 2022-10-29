@@ -79,7 +79,7 @@ public class ManagerServiceImpl implements ManagerService {
                 .phoneNumber(individualDto.getPhoneNumber())
                 .clientStatus(CLIENT_STATUS.GENERAL)
                 .build());
-        bankAccountRepository.save(BankAccount.builder()
+        bankAccountRepository.save(BankAccount.builder()//todo в отдельный метод
                 .balance(0.0)
                 .IBAN(getIban())
                 .individualUser(newIndividualUser)

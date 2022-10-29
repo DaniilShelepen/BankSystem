@@ -1,9 +1,7 @@
 package com.daniil.bank.demo;
 
-import com.daniil.bank.demo.dal.repository.BankAccountRepository;
-import com.daniil.bank.demo.dal.repository.GuarantorRepository;
-import com.daniil.bank.demo.dal.repository.IndividualRepository;
-import com.daniil.bank.demo.dal.repository.NaturalCreditRepository;
+import com.daniil.bank.demo.dal.entity.Payment;
+import com.daniil.bank.demo.dal.repository.*;
 import com.daniil.bank.demo.dto.GuarantorDto;
 import com.daniil.bank.demo.dto.IndividualDto;
 import com.daniil.bank.demo.dto.NaturalOfferDto;
@@ -22,6 +20,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.time.LocalDateTime;
 
 @SpringBootTest
 @Slf4j
@@ -51,6 +51,9 @@ class BankApplicationTests {
 
     @Autowired
     GuarantorRepository guarantorRepository;
+
+    @Autowired
+    PaymentRepository paymentRepository;
 
 
     @Test
@@ -165,7 +168,23 @@ class BankApplicationTests {
 
     @Test
     void queryTest() {
-        log.info(String.valueOf(individualRepository.getIndividualsAndCards().get(0).getCardNumber()));
+        //  log.info(String.valueOf(individualRepository.getIndividualsAndCards().get(0).getCardNumber()));
+        paymentRepository.save(Payment.builder()
+                .entityUser(null)
+                .legalCredit(null)
+                .date(LocalDateTime.now())
+                .sum(15_000)
+                .build()
+        );
+
+        paymentRepository.save(Payment.builder()
+                .entityUser(null)
+                .legalCredit(null)
+                .date(LocalDateTime.of(2022, 9, 12, 15, 12, 8))
+                .sum(15_000)
+                .build()
+        );
+
     }
 
 

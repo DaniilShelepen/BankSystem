@@ -11,7 +11,6 @@ public class EntityConvertorImpl implements EntityConvertor {
 
     private final ModelMapper mapper;
 
-
     public EntityConvertorImpl() {
         this.mapper = new ModelMapper();
     }

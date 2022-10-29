@@ -9,8 +9,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -26,7 +25,7 @@ public class Payment {
     private Long id;
 
     private double sum;
-    private LocalDate date;
+    private LocalDateTime date;
 
     @ManyToOne
     EntityUser entityUser;

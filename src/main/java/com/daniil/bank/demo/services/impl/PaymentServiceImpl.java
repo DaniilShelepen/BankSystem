@@ -10,8 +10,7 @@ import com.daniil.bank.demo.services.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +25,7 @@ public class PaymentServiceImpl implements PaymentService {
                 .individualUser(individualUser)
                 .sum(sum)
                 .naturalCredit(naturalCredit)
-                .date(LocalDate.now())
+                .date(LocalDateTime.now())
                 .build()
         );
 
@@ -39,7 +38,7 @@ public class PaymentServiceImpl implements PaymentService {
                 .entityUser(entityUser)
                 .sum(sum)
                 .legalCredit(legalCredit)
-                .date(LocalDate.now())
+                .date(LocalDateTime.now())
                 .build()
         );
 
