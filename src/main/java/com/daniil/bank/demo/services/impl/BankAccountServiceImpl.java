@@ -1,13 +1,19 @@
 package com.daniil.bank.demo.services.impl;
 
 import com.daniil.bank.demo.dal.entity.BankAccount;
+import com.daniil.bank.demo.dal.entity.legal.EntityUser;
 import com.daniil.bank.demo.dal.entity.legal.LegalCredit;
+import com.daniil.bank.demo.dal.entity.natural.IndividualUser;
 import com.daniil.bank.demo.dal.entity.natural.NaturalCredit;
 import com.daniil.bank.demo.dal.repository.BankAccountRepository;
 import com.daniil.bank.demo.dal.repository.NaturalCreditRepository;
+import com.daniil.bank.demo.enums.ACCOUNT_STATUS;
+import com.daniil.bank.demo.enums.CURRENCY;
 import com.daniil.bank.demo.services.BankAccountService;
 import com.daniil.bank.demo.services.PaymentService;
 import lombok.RequiredArgsConstructor;
+import org.iban4j.CountryCode;
+import org.iban4j.Iban;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +33,7 @@ public class BankAccountServiceImpl implements BankAccountService {
 
     @Override
     @Transactional
-    public void naturalCredit(BankAccount givingBankAccount, double sum, NaturalCredit credit) {
+    public void naturalCreditPay(BankAccount givingBankAccount, double sum, NaturalCredit credit) {
         BalanceCheck(givingBankAccount, sum);
 
         givingBankAccount.setBalance(givingBankAccount.getBalance() - sum);
@@ -42,8 +48,30 @@ public class BankAccountServiceImpl implements BankAccountService {
 
     @Override
     @Transactional
-    public void legalCredit(BankAccount givingBankAccount, double sum, LegalCredit credit) {
+    public void legalCreditPay(BankAccount givingBankAccount, double sum, LegalCredit credit) {
 
+    }
+
+    @Override
+    public void createNaturalBankAccount(IndividualUser individualUser, CURRENCY currency) {
+        bankAccountRepository.save(BankAccount.builder()
+                .balance(0.0)
+                .IBAN(getIban())
+                .individualUser(individualUser)
+                .currency(currency)
+                .accountStatus(ACCOUNT_STATUS.ACTIVE)
+                .build());
+    }
+
+    @Override
+    public void createEntityBankAccount(EntityUser entityUser, CURRENCY currency) {
+        bankAccountRepository.save(BankAccount.builder()
+                .balance(0.0)
+                .IBAN(getIban())
+                .entityUser(entityUser)
+                .currency(currency)
+                .accountStatus(ACCOUNT_STATUS.ACTIVE)
+                .build());
     }
 
     @Override
@@ -66,4 +94,16 @@ public class BankAccountServiceImpl implements BankAccountService {
     }
 
 
+    private String getIban() {
+        Iban iban;
+
+        do {
+            iban = new Iban.Builder()
+                    .countryCode(CountryCode.BY)
+                    .bankCode("1707")
+                    .buildRandom();
+        }
+        while (bankAccountRepository.findBankAccountByIBAN(String.valueOf(iban)) != null);
+        return iban.toString();
+    }
 }

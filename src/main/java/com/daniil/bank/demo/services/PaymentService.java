@@ -9,9 +9,14 @@ import java.math.BigDecimal;
 
 public interface PaymentService {
 
-
+    /**
+     * Создание отчета об оплате физ кредита
+     **/
     void createIndividualPayment(IndividualUser individualUser, double sum, NaturalCredit naturalCredit);
 
+    /**
+     * Создание отчета об оплате юр кредита
+     **/
     void createEntityPayment(EntityUser entityUser, double sum, LegalCredit legalCredit);
 
 }

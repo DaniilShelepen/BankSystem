@@ -14,13 +14,12 @@ import com.daniil.bank.demo.enums.CLIENT_STATUS;
 import com.daniil.bank.demo.enums.CURRENCY;
 import com.daniil.bank.demo.exceptions.ManagerException;
 import com.daniil.bank.demo.mapper.*;
+import com.daniil.bank.demo.services.BankAccountService;
 import com.daniil.bank.demo.services.CardService;
 import com.daniil.bank.demo.services.ContractService;
 import com.daniil.bank.demo.services.ManagerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.iban4j.CountryCode;
-import org.iban4j.Iban;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,26 +45,22 @@ public class ManagerServiceImpl implements ManagerService {
     private final CardService cardService;
     private final ContractService contractService;
 
+    private final BankAccountService bankAccountService;
+
     private final BankAccountConvertor bankAccountConvertor;
 
     @Override
     public IndividualDto createIndividual(IndividualDto individualDto, CURRENCY currency) {
-        IndividualUser individualUserDB = individualRepository
+        IndividualUser individualUser = individualRepository
                 .findByPassportIDAndPassportSeries(individualDto.getPassportID(), individualDto.getPassportSeries());
 
-        if (individualUserDB != null) {//todo посмотри как можно переделать
-            if ((int) individualUserDB.getBankAccounts().stream()
+        if (individualUser != null) {//todo посмотри как можно переделать
+            if ((int) individualUser.getBankAccounts().stream()
                     .filter(bankAccount -> bankAccount.getCurrency().equals(currency)).count() == 0) {
-                bankAccountRepository.save(BankAccount.builder()
-                        .balance(0.0)
-                        .IBAN(getIban())
-                        .individualUser(individualUserDB)
-                        .currency(currency)
-                        .accountStatus(ACCOUNT_STATUS.ACTIVE)
-                        .build());
-                return individualConvertor.convert(individualUserDB);
+                bankAccountService.createNaturalBankAccount(individualUser, currency);
+                return individualConvertor.convert(individualUser);
             }
-            return individualConvertor.convert(individualUserDB);
+            return individualConvertor.convert(individualUser);
         }
 
 
@@ -79,13 +74,8 @@ public class ManagerServiceImpl implements ManagerService {
                 .phoneNumber(individualDto.getPhoneNumber())
                 .clientStatus(CLIENT_STATUS.GENERAL)
                 .build());
-        bankAccountRepository.save(BankAccount.builder()//todo в отдельный метод
-                .balance(0.0)
-                .IBAN(getIban())
-                .individualUser(newIndividualUser)
-                .currency(currency)
-                .accountStatus(ACCOUNT_STATUS.ACTIVE)
-                .build());
+
+        bankAccountService.createNaturalBankAccount(newIndividualUser, currency);
 
         return individualConvertor.convert(newIndividualUser);
     }
@@ -108,21 +98,16 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public EntityDto createEntity(EntityDto entityDto, CURRENCY currency) {
-        EntityUser entityUserDB = entityRepository.findByName(entityDto.getName().toUpperCase());
+        EntityUser entityUser = entityRepository.findByName(entityDto.getName().toUpperCase());
 
-        if (entityUserDB != null) {//todo посмотри как можно переделать
-            if ((int) entityUserDB.getBankAccounts().stream()
+        if (entityUser != null) {//todo посмотри как можно переделать
+            if ((int) entityUser.getBankAccounts().stream()
                     .filter(bankAccount -> bankAccount.getCurrency().equals(currency)).count() == 0) {
-                bankAccountRepository.save(BankAccount.builder()
-                        .balance(0.0)
-                        .IBAN(getIban())
-                        .entityUser(entityUserDB)
-                        .currency(currency)
-                        .accountStatus(ACCOUNT_STATUS.ACTIVE)
-                        .build());
-                return entityConvertor.convert(entityUserDB);
+                bankAccountService.createEntityBankAccount(entityUser, currency);
+
+                return entityConvertor.convert(entityUser);
             }
-            return entityConvertor.convert(entityUserDB);
+            return entityConvertor.convert(entityUser);
         }
 
 
@@ -134,13 +119,7 @@ public class ManagerServiceImpl implements ManagerService {
                 .typeOfOwn(entityDto.getTypeOfOwn())
                 .build());
 
-        bankAccountRepository.save(BankAccount.builder()
-                .balance(0.0)
-                .IBAN(getIban())
-                .entityUser(newEntityUser)
-                .currency(currency)
-                .accountStatus(ACCOUNT_STATUS.ACTIVE)
-                .build());
+        bankAccountService.createEntityBankAccount(newEntityUser, currency);
         return entityConvertor.convert(newEntityUser);
     }
 
@@ -257,17 +236,6 @@ public class ManagerServiceImpl implements ManagerService {
         return entityUser.getName() + "\n" + entityUser.getAddress() + "\n" + entityUser.getPhoneNumber();
     }
 
-    private String getIban() {
-        Iban iban;
 
-        do {
-            iban = new Iban.Builder()
-                    .countryCode(CountryCode.BY)
-                    .bankCode("1707")
-                    .buildRandom();
-        }
-        while (bankAccountRepository.findBankAccountByIBAN(String.valueOf(iban)) != null);
-        return iban.toString();
-    }
 }
 

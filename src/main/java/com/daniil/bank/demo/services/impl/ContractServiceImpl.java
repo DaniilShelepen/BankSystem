@@ -50,9 +50,9 @@ public class ContractServiceImpl implements ContractService {
                 naturalCreditRepository.save(NaturalCredit.builder()
                         .sum(calculationCredit(sum, credit.getTimeMonth(), percentageRate))
                         .monthlyPayment(calculationCredit(sum, credit.getTimeMonth(), percentageRate) / credit.getTimeMonth())
-                        .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))//todo тут посмотри как поставить последний день получившегося месяца
+                        .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))
+                        .registration_date(LocalDate.now())
                         .status(CREDIT_STATUS.PROCESSING)
-
                         .percentageRate(percentageRate)
                         .currency(credit.getCurrency())
                         .forfeit(0.0)
@@ -71,9 +71,9 @@ public class ContractServiceImpl implements ContractService {
                 naturalCreditRepository.save(NaturalCredit.builder()
                         .sum(calculationCredit(sum, credit.getTimeMonth(), percentageRate))
                         .monthlyPayment(calculationCredit(sum, credit.getTimeMonth(), percentageRate) / credit.getTimeMonth())
-                        .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))//todo тут посмотри как поставиьт последний день получившегося месяца
+                        .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))
+                        .registration_date(LocalDate.now())
                         .status(CREDIT_STATUS.PROCESSING)
-
                         .percentageRate(percentageRate)
                         .currency(credit.getCurrency())
                         .forfeit(0.0)
@@ -91,9 +91,9 @@ public class ContractServiceImpl implements ContractService {
                 naturalCreditRepository.save(NaturalCredit.builder()
                         .sum(calculationCredit(sum, credit.getTimeMonth(), percentageRate))
                         .monthlyPayment(calculationCredit(sum, credit.getTimeMonth(), percentageRate) / credit.getTimeMonth())
-                        .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))//todo тут посмотри как поставить последний день получившегося месяца
+                        .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))
+                        .registration_date(LocalDate.now())
                         .status(CREDIT_STATUS.PROCESSING)
-
                         .percentageRate(percentageRate)
                         .currency(credit.getCurrency())
                         .forfeit(0.0)
@@ -110,9 +110,9 @@ public class ContractServiceImpl implements ContractService {
                 naturalCreditRepository.save(NaturalCredit.builder()
                         .sum(calculationCredit(sum, credit.getTimeMonth(), credit.getPercentageRate()))
                         .monthlyPayment(calculationCredit(sum, credit.getTimeMonth(), credit.getPercentageRate()) / credit.getTimeMonth())
-                        .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))//todo тут посмотри как поставиьт последний день получившегося месяца
+                        .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))
+                        .registration_date(LocalDate.now())
                         .status(CREDIT_STATUS.PROCESSING)
-
                         .percentageRate(credit.getPercentageRate())
                         .currency(credit.getCurrency())
                         .forfeit(0.0)
@@ -157,6 +157,7 @@ public class ContractServiceImpl implements ContractService {
                         .sum(calculationCredit(sum, credit.getTimeMonth(), percentageRate))
                         .monthlyPayment(calculationCredit(sum, credit.getTimeMonth(), percentageRate) / credit.getTimeMonth())
                         .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))
+                        .registration_date(LocalDate.now())
                         .build());
             }
 
@@ -168,12 +169,12 @@ public class ContractServiceImpl implements ContractService {
                         .number(number)
                         .forfeit(0.0)
                         .status(CREDIT_STATUS.PROCESSING)
-
                         .percentageRate(percentageRate)
                         .currency(credit.getCurrency())
                         .sum(calculationCredit(sum, credit.getTimeMonth(), percentageRate))
                         .monthlyPayment(calculationCredit(sum, credit.getTimeMonth(), percentageRate) / credit.getTimeMonth())
                         .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))
+                        .registration_date(LocalDate.now())
                         .build());
 
 
@@ -190,6 +191,7 @@ public class ContractServiceImpl implements ContractService {
                         .sum(calculationCredit(sum, credit.getTimeMonth(), credit.getPercentageRate()))
                         .monthlyPayment(calculationCredit(sum, credit.getTimeMonth(), credit.getPercentageRate()) / credit.getTimeMonth())
                         .loanTerm(LocalDate.now().plusMonths(credit.getTimeMonth()))
+                        .registration_date(LocalDate.now())
                         .build());
             }
 

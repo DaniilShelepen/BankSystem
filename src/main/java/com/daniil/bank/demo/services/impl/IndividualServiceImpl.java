@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -72,7 +71,7 @@ public class IndividualServiceImpl implements IndividualService {
 
         verificationBankAccount(individualID, bankAccount);
 
-        bankAccountService.naturalCredit(bankAccount, sum, credit);
+        bankAccountService.naturalCreditPay(bankAccount, sum, credit);
 
     }
 

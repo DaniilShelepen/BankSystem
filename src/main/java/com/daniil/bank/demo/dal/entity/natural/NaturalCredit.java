@@ -24,8 +24,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class NaturalCredit {//еще раз проверь что все поля и что они В НУЖНОМ МЕСТЕ
-    //и создай таблицы в которых будут доступные кредиты
+@Table(name = "natural_credit")
+public class NaturalCredit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -34,10 +34,14 @@ public class NaturalCredit {//еще раз проверь что все пол�
     @Enumerated(EnumType.STRING)
     private CREDIT_STATUS status;
     private String number;
+    @Column(name = "sum")
     private double sum;
     private double monthlyPayment;
     @DateTimeFormat(pattern = "dd.MM.yyyy")
     private LocalDate loanTerm;//срок до какого должен быть выплачен кредит
+    @DateTimeFormat(pattern = "dd.MM.yyyy")
+    @Column(name = "registration_date")
+    private LocalDate registration_date;
     private double percentageRate;// процентная ставка
     @Enumerated(EnumType.STRING)
     private CURRENCY currency;//валюта

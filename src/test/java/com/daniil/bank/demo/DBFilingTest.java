@@ -8,14 +8,17 @@ import com.daniil.bank.demo.enums.*;
 import com.daniil.bank.demo.services.ManagerService;
 import com.daniil.bank.demo.services.OfferService;
 import com.daniil.bank.demo.services.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @SpringBootTest
+@Slf4j
 public class DBFilingTest {
 
 
@@ -37,6 +40,9 @@ public class DBFilingTest {
 
     @Autowired
     NaturalCreditRepository naturalCreditRepository;
+
+    @Autowired
+    BankAccountRepository bankAccountRepository;
 
     @Test
     void DBFiling() {
@@ -225,11 +231,10 @@ public class DBFilingTest {
 /** **/
 
 
-
     }
 
     @Test
-    void test(){
+    void test() {
 
         lawsuitRepository.save(Lawsuit.builder()
                 .individualUser(individualRepository.findByPhoneNumber("+375295763357"))
@@ -256,6 +261,13 @@ public class DBFilingTest {
                 .date(LocalDateTime.of(2022, 9, 15, 18, 23))
                 .build()
         );
+
+    }
+
+    @Test
+    void queryTest() {
+        log.info(String.valueOf(LocalDate.now()));
+        log.info(naturalCreditRepository.banksTotalWithdrawal(LocalDate.now()));//"2022-11"
 
     }
 

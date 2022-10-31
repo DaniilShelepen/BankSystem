@@ -25,6 +25,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
+@Table(name= "legal_credit")
 public class LegalCredit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,11 +35,14 @@ public class LegalCredit {
     @Enumerated(EnumType.STRING)
     private CREDIT_STATUS status;
     private String number;
+    @Column(name = "sum")
     private double sum;
     private double monthlyPayment;
-
     @DateTimeFormat(pattern = "dd.MM.yyyy")
     private LocalDate loanTerm;//срок до какого должен быть выплачен кредит
+    @DateTimeFormat(pattern = "dd.MM.yyyy")
+    @Column(name = "registration_date")
+    private LocalDate registration_date;
     private double percentageRate;// процентная ставка
     @Enumerated(EnumType.STRING)
     private CURRENCY currency;//валюта
